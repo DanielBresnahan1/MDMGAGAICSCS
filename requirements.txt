@@ -1,10 +1,10 @@
-aiobotocore
+boto3
+aiobotocore==1.2.1
 aiohttp==3.7.3
 aioitertools==0.7.1
 async-timeout==3.0.1
 attrs==20.3.0
-boto3
-botocore
+botocore==1.19.52
 chardet==3.0.4
 click==7.1.2
 dominate==2.6.0
