@@ -15,6 +15,7 @@ import pandas as pd
 import os
 import numpy as np
 import boto3
+import pickle
 from io import StringIO
 
 bootstrap = Bootstrap(app)
@@ -177,7 +178,8 @@ def home():
     """
     Operates the root (/) and index(index.html) web pages.
     """
-    session.pop('model', None)
+    session.permanent=True
+    #session.pop('model', None)
     return render_template('index.html')
 
 @app.route("/label.html",methods=['GET', 'POST'])
@@ -185,11 +187,14 @@ def label():
     """
     Operates the label(label.html) web page.
     """
+    print("Printing")
     form = LabelForm()
-    if 'model' not in session:#Start
+    if 'model' not in session and 'queue' not in session and 'labels' not in session == []:#Start
+        print("No Model:(")
         return initializeAL(form, .7)
 
     elif session['queue'] == [] and session['labels'] == []: # Need more pictures
+        print("model")
         return getNextSetOfImages(form, lowestPercentage)
 
     elif form.is_submitted() and session['queue'] == []:# Finished Labeling
@@ -199,7 +204,9 @@ def label():
         session['labels'].append(form.choice.data)
         return renderLabel(form)
 
-    return render_template('label.html', form = form)
+    else:
+        print("broke?")
+        return render_template('label.html', form = form)
 
 @app.route("/intermediate.html",methods=['GET'])
 def intermediate():
