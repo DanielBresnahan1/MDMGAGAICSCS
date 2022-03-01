@@ -229,4 +229,49 @@ def feedback(h_list,u_list,h_conf_list,u_conf_list):
     
     return render_template('feedback.html', healthy_list = h_feedback_result, unhealthy_list = u_feedback_result, healthy_conf_list = h_conf_result, unhealthy_conf_list = u_conf_result, h_list_length = h_length, u_list_length = u_length)
 
+
+@app.route("/retrain.html", methods=['GET'])
+@app.route("/retrain/<h_disagree_list>/<u_disagree_list>", methods=['GET'])
+def retrain(h_disagree_list, u_disagree_list):
+    """
+    Retrain the random forest algorithm with the images the user already classified
+    and with the images the user disagrees with from the current model.
+
+    Parameters
+    ----------
+    h_disagree_list : list of image names
+        the images that the model classified as healthy,
+        but the user believes are actually unhealthy
+
+    u_disagree_list : list of image names
+        the images that the model classified as unhealthy,
+        but the user believes are actually healthy
+
+    """
+    new_healthy_images = list(u_disagree_list.split(","))
+    new_unhealthy_images = list(h_disagree_list.split(","))
+    if new_healthy_images[0] != 'null':
+        for image_name in new_healthy_images:
+            session['train'] = session['train'] + ((image_name, 'H'), )
+            session['test'].remove(image_name)
+    if new_unhealthy_images[0] != 'null':
+        for image_name in new_unhealthy_images:
+            session['train'] = session['train'] + ((image_name, 'B'), )
+            session['test'].remove(image_name)
+
+    # make a model in here
+    data = getData()
+    ml_model, train_img_names = createMLModel(data)
+
+    session['confidence'] = np.mean(ml_model.K_fold())
+    # https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/imageName is this reliable for images?
+
+    # which test_set to use? same?
+    test_set = data[data.index.isin(train_img_names) == False]
+    test_set = data.loc[session['test'], :]
+    health_pic_user, blight_pic_user, health_pic, blight_pic, health_pic_prob, blight_pic_prob = ml_model.infoForResults(train_img_names, test_set)
+    return render_template('retrain.html', confidence = "{:.2%}".format(round(session['confidence'],4)), health_user = health_pic_user, blight_user = blight_pic_user, healthNum_user = len(health_pic_user), blightNum_user = len(blight_pic_user), health_test = health_pic, unhealth_test = blight_pic, healthyNum = len(health_pic), unhealthyNum = len(blight_pic), healthyPct = "{:.2%}".format(len(health_pic)/(200-(len(health_pic_user)+len(blight_pic_user)))), unhealthyPct = "{:.2%}".format(len(blight_pic)/(200-(len(health_pic_user)+len(blight_pic_user)))), h_prob = health_pic_prob, b_prob = blight_pic_prob)
+
+
+
 #app.run( host='127.0.0.1', port=5000, debug='True', use_reloader = False)
