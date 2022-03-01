@@ -13,7 +13,7 @@ import re
 
 class ImagePatcher:
     
-    def __init__(self, saveDir: str, patchSize: tuple, majorAxisDif=16,
+    def __init__(self, saveDir: str, patchSize: tuple, majorAxisDif=4,
                  stride=10, imageSize=(6000, 4000)):
         """
         
@@ -47,7 +47,6 @@ class ImagePatcher:
         self.rotBoosting = True
         self.stride = stride
         self.imageSize = imageSize
-        self.Folder = "Positive"
         
     def patch_path(self, x1, y1, x2, y2):
         """
@@ -72,29 +71,17 @@ class ImagePatcher:
 
         """
         
-        slope = (y2-y1)/(x2-x1)
+        slope = 1
         
+        if x2-x1:
+            slope = (y2-y1)/(x2-x1)
+    
         coords = []
         
-        startx = 0
-        starty = 0
-        
-        if x1<x2:
-            startx=x1
-            endx=x2
-        else:
-            startx=x2
-            endx=x1
-        
-        if y1<y2:
-            starty=y1
-        else:
-            starty=y2
-        
         yshift=0
-        for x in range(startx, endx, self.stride):
+        for x in range(x1, x2, self.stride):
             yshift += self.stride*slope
-            coords.append((x, starty+yshift))
+            coords.append((x, y1+yshift))
         
         return coords
     
@@ -145,51 +132,52 @@ class ImagePatcher:
         #determine weather or not a lession exists, if 0, there is no lession
         lessionSum = sum(lessionCoords)
         
+        Folder = ""
+        
         if lessionSum:
-            self.Folder = "Positive"
+            Folder = "Positive"
             patch_centers = self.patch_path(*lessionCoords)
         else:
-            self.Folder = "Negative"
+            Folder = "Negative"
             patch_centers = self.patch_grid()
-            
-        print(patch_centers)
         
         im = PIL.Image.open(imagePath)
         
-        image_name = re.findall("^(.*?)\.jpg", os.path.basename(imagePath))[0]
+        print(os.path.basename(imagePath))
+        
+        image_name = os.path.basename(imagePath).split(".")[0]
         
         for x, y in patch_centers:
             
-            x = random.randint(-1 * self.majorAxisDif/2, self.majorAxisDif/2)
-            y = random.randint(-1 * self.majorAxisDif/2, self.majorAxisDif/2)
-            
-            # radians = angle * math.pi / 180
-            
-            # print("X:{},Y:{}".format(x, y))
-            
-            # rot_x = (x - self.imageSize[0]/2)*math.cos(angle) - (y - self.imageSize[1]/2)*math.sin(angle) + self.imageSize[0]/2
-            # rot_y = (x - self.imageSize[0]/2)*math.sin(angle) - (y - self.imageSize[1]/2)*math.cos(angle) + self.imageSize[1]/2
-            
-            # print("rot_X:{},rot_Y:{}".format(rot_x, rot_y))
+            x = x + random.randint(-1 * self.majorAxisDif/2, self.majorAxisDif/2)
+            y = y + random.randint(-1 * self.majorAxisDif/2, self.majorAxisDif/2)
             
             crop = (x - self.patchSize[0]/2, y - self.patchSize[1]/2,
                                     x + self.patchSize[0]/2, y +  self.patchSize[1]/2)
         
-            if all(coord > 0 for coord in crop):
+            if crop[0] > 0 and crop[0] < self.imageSize[0] and crop[1] > 0 and crop[1] < self.imageSize[1]:
                 im_crop = im.crop(crop)
-                im_crop.save(os.path.join(self.saveDir, self.Folder, 
+                im_crop.save(os.path.join(self.saveDir, Folder, 
                                            "{}_{}_{}.jpg".format(image_name, crop[0], crop[1])))
         
 
 
 if __name__=="__main__":
     curDir = os.getcwd()
-    image = "J_170823_134140.jpg"
+    image = "DSC00025T.jpg"
     image_dir = os.path.join(curDir, image)
     
+    im = PIL.Image.open(image)
+    
+    print(im.size)
+    
     patcher = ImagePatcher(os.path.join(curDir, "save"), (224, 224), imageSize=(6000, 4000))
-    patcher.patch(image_dir, (1795,415,1518,0))
-        
+    patcher.patch(image_dir, (1864,2064,2864,1648))
+    
+    image = "DSC00027.jpg"
+    image_dir = os.path.join(curDir, image)
+    
+    patcher.patch(image_dir, (0,0,0,0))
         
         
     
