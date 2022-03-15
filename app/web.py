@@ -178,7 +178,7 @@ def home():
     """
     Operates the root (/) and index(index.html) web pages.
     """
-    session.permanent=True
+    session.permanent = True
     #session.pop('model', None)
     return render_template('index.html')
 
@@ -187,14 +187,18 @@ def label():
     """
     Operates the label(label.html) web page.
     """
-    print("Printing")
     form = LabelForm()
-    if 'model' not in session and 'queue' not in session and 'labels' not in session == []:#Start
-        print("No Model:(")
+    if 'model' not in session:#Start
         return initializeAL(form, .7)
 
-    elif session['queue'] == [] and session['labels'] == []: # Need more pictures
-        print("model")
+    if 'queue' not in session:
+        session['queue'] = []
+
+    if 'labels' not in session:
+        session['labels'] = []
+
+    if session['queue'] == [] and session['labels'] == []: # Need more pictures
+        print("Please")
         return getNextSetOfImages(form, lowestPercentage)
 
     elif form.is_submitted() and session['queue'] == []:# Finished Labeling
@@ -204,9 +208,8 @@ def label():
         session['labels'].append(form.choice.data)
         return renderLabel(form)
 
-    else:
-        print("broke?")
-        return render_template('label.html', form = form)
+    print("Broke :( :( :( :(")
+    return render_template('label.html', form = form)
 
 @app.route("/intermediate.html",methods=['GET'])
 def intermediate():
