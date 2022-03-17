@@ -6,10 +6,8 @@ This is a temporary script file.
 """
 
 import PIL
-import math
 import random
 import os
-import re
 
 class ImagePatcher:
     
@@ -157,8 +155,16 @@ class ImagePatcher:
         
             if crop[0] > 0 and crop[0] < self.imageSize[0] and crop[1] > 0 and crop[1] < self.imageSize[1]:
                 im_crop = im.crop(crop)
-                im_crop.save(os.path.join(self.saveDir, Folder, 
-                                           "{}_{}_{}.jpg".format(image_name, crop[0], crop[1])))
+                
+                for a in range(0, 360, 90):
+                    
+                    rot = im_crop.rotate(a, PIL.Image.BICUBIC, expand=1)
+                    
+                    if not rot.size == self.patchSize:
+                        rot = rot.resize(self.patchSize)
+                    
+                    rot.save(os.path.join(self.saveDir, Folder, 
+                                               "{}_{}_{}_{}.jpg".format(image_name, int(crop[0]), int(crop[1]), a)))
         
 
 
