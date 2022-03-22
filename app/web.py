@@ -15,6 +15,7 @@ import pandas as pd
 import os
 import numpy as np
 import boto3
+import pickle
 from io import StringIO
 
 bootstrap = Bootstrap(app)
@@ -177,7 +178,8 @@ def home():
     """
     Operates the root (/) and index(index.html) web pages.
     """
-    session.pop('model', None)
+    session.permanent = True
+    #session.pop('model', None)
     return render_template('index.html')
 
 @app.route("/label.html",methods=['GET', 'POST'])
@@ -189,7 +191,13 @@ def label():
     if 'model' not in session:#Start
         return initializeAL(form, .7)
 
-    elif session['queue'] == [] and session['labels'] == []: # Need more pictures
+    if 'queue' not in session:
+        session['queue'] = []
+
+    if 'labels' not in session:
+        session['labels'] = []
+
+    if session['queue'] == [] and session['labels'] == []: # Need more pictures
         return getNextSetOfImages(form, lowestPercentage)
 
     elif form.is_submitted() and session['queue'] == []:# Finished Labeling
@@ -199,7 +207,7 @@ def label():
         session['labels'].append(form.choice.data)
         return renderLabel(form)
 
-    return render_template('label.html', form = form)
+    return initializeAL(form, .7)
 
 @app.route("/intermediate.html",methods=['GET'])
 def intermediate():
@@ -273,5 +281,9 @@ def retrain(h_disagree_list, u_disagree_list):
     return render_template('retrain.html', confidence = "{:.2%}".format(round(session['confidence'],4)), health_user = health_pic_user, blight_user = blight_pic_user, healthNum_user = len(health_pic_user), blightNum_user = len(blight_pic_user), health_test = health_pic, unhealth_test = blight_pic, healthyNum = len(health_pic), unhealthyNum = len(blight_pic), healthyPct = "{:.2%}".format(len(health_pic)/(200-(len(health_pic_user)+len(blight_pic_user)))), unhealthyPct = "{:.2%}".format(len(blight_pic)/(200-(len(health_pic_user)+len(blight_pic_user)))), h_prob = health_pic_prob, b_prob = blight_pic_prob)
 
 
+@app.route("/restart.html", methods=['GET'])
+def restart():
+    session.pop('model', None)
+    return redirect(url_for('home'))
 
 #app.run( host='127.0.0.1', port=5000, debug='True', use_reloader = False)
