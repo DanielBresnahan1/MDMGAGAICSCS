@@ -12,29 +12,32 @@ Created on Mon Mar  7 19:15:17 2022
 @author: Danie
 """
 
-import numpy as np
-import os
+
+import tensorflow as tf
 from batches_iterator import BatchesIterator
 from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Activation, MaxPooling2D, Flatten, Dense, BatchNormalization
-from keras.layers.convolutional import Conv2D as Convolution2D
+from tensorflow.keras.layers import Conv2D as Convolution2D
 from tensorflow.keras.callbacks import ModelCheckpoint
-from tensorflow.keras import metrics
+
+
+gpus = tf.config.list_physical_devices('GPU')
+if gpus:
+    for gpu in gpus:
+        tf.config.experimental.set_virtual_device_configuration(gpu,[tf.config.experimental.VirtualDeviceConfiguration(memory_limit=5120)])
 
 model = Sequential()
 
-valid_lesion_dir = "Z:\\Coding\\Dataset\\Validation\\Positive"
-valid_no_lesion_dir = "Z:\\Coding\\Dataset\\Validation\\Negative"
-train_lesion_dir = "Z:\\Coding\\Dataset\\Train\\Positive"
-train_no_lesion_dir = "Z:\\Coding\\Dataset\\Train\\Negative"
+valid_lesion_dir = "E:\\Coding\\Dataset\\Validation\\Positive"
+valid_no_lesion_dir = "E:\\Coding\\Dataset\\Validation\\Negative"
+train_lesion_dir = "E:\\Coding\\Dataset\\Train\\Positive"
+train_no_lesion_dir = "E:\\Coding\\Dataset\\Train\\Negative"
 
-train_batch_size = 40000
-valid_batch_size = 50000
+train_batch_size = 200
+valid_batch_size = 500
 
 train_batches = BatchesIterator(train_batch_size,train_no_lesion_dir,train_lesion_dir)
 valid_batches = BatchesIterator(valid_batch_size,valid_no_lesion_dir,valid_lesion_dir)
-X_valid, Y_valid = next(valid_batches)
-
 
 
 model.add(BatchNormalization(axis=1, input_shape=(3,224,224)))
@@ -60,20 +63,24 @@ model.add(BatchNormalization())
 model.add(Dense(1))
 
 model.add(Activation('sigmoid'))
-model.compile(loss='binary_crossentropy', optimizer='rmsprop')
-model.summary()
+model.compile(loss='binary_crossentropy', optimizer='rmsprop',metrics=[
+                  tf.keras.losses.BinaryCrossentropy(name='binary_crossentropy'),
+                  'accuracy'])
+model.summary()  
 
 file_name = 'network_T_1'
-saveWeigts = ModelCheckpoint(file_name+'_best_weights.h5', monitor='val_accuracy', verbose=1, save_best_only=True)
+saveWeigts = ModelCheckpoint(file_name+'_best_weights.h5', monitor='accuracy', verbose=1, save_best_only=True)
 
 cllbcks= [saveWeigts]
 
 
-
-for mini_epoch in range(20):
-	print("Epoch ", mini_epoch)
-
-	X_train, Y_train = next(train_batches)
-
-	model.fit(X_train, Y_train, batch_size=32, callbacks = cllbcks,
-			validation_data=(X_valid,Y_valid), verbose=1)
+if __name__=="__main__":
+    
+    for mini_epoch in range(1000):
+        print("Epoch ", mini_epoch)
+    
+        X_train, Y_train, _ = next(train_batches)
+        X_valid, Y_valid, _ = next(valid_batches)
+    
+        model.fit(X_train, Y_train, callbacks = cllbcks,
+    			validation_data=(X_valid,Y_valid), verbose=0)

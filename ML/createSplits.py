@@ -74,7 +74,7 @@ def write_csv(dict_annotations, file_name, orig_dir="", dest_dir=""):
 if __name__=="__main__":
     
     
-    base_dir = "Z:\Coding\Dataset"
+    base_dir = "E:\Coding\Dataset"
 
     annotations = os.path.join(base_dir, "annotations_handheld.csv")
 

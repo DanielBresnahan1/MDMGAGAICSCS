@@ -46,7 +46,6 @@ class BatchesIterator(Iterator):
         else:
             this_batch_size = self.batch_size
 
-        print("files index: ", self.batch_start_index)
         batch_x = np.zeros((this_batch_size,3,224,224), dtype='uint8')
 		
         batch_y = np.zeros((this_batch_size), dtype='uint8')
@@ -56,12 +55,11 @@ class BatchesIterator(Iterator):
             this_file_name = self.files[self.batch_start_index+x][0]
             pic = PIL.Image.open(this_file_name)
             pic = np.array(pic)
-            print(this_file_name)
-            batch_x[x]=pic.reshape(3,244,244)
+            batch_x[x]=pic.reshape(3,224,224)
             batch_y[x]=self.files[self.batch_start_index+x][1]
             batch_file_names.append(this_file_name) 
         self.batch_start_index+=self.batch_size
-        return batch_x, batch_y
+        return batch_x, batch_y, batch_file_names
     
 
 

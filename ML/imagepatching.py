@@ -45,7 +45,23 @@ class ImagePatcher:
         self.rotBoosting = True
         self.stride = stride
         self.imageSize = imageSize
-        
+    
+    def set_save_dir(self, savedir):
+        """
+        Setter to change save Directory, primarly used for test image patching, as all images need to be split cubicly
+
+        Parameters
+        ----------
+        savedir : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.saveDir = savedir
+    
     def patch_path(self, x1, y1, x2, y2):
         """
         This generates a list of coordinates, that represent the location on each
