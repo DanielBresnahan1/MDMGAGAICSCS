@@ -9,40 +9,39 @@ and 'Negative' directories
 """
 
 
-try:
-    from collections.abc import Iterator
-except ImportError:
-    from collections import Iterator  
+from tensorflow.keras.utils import Sequence
 import numpy as np
 import os
 import PIL
+import math
 
-class BatchesIterator(Iterator):
+class BatchesIterator(Sequence):
     def __init__(self, batch_size, no_lesion_folder_path, 
-              lesion_folder_path, lesion=True, no_lesion=True):
+              lesion_folder_path, lesion=True, no_lesion=True, return_dir=False):
 
         self.batch_size = batch_size
-        self.batch_start_index = 0
         self.files = []
-        self.need_to_shuffle = True
+        self.return_dir = return_dir
         if lesion == True:
             for file in os.listdir(lesion_folder_path):
                 self.files.append((os.path.join(lesion_folder_path, file), 1))
         if no_lesion == True:
             for file in os.listdir(no_lesion_folder_path):
                 self.files.append((os.path.join(no_lesion_folder_path, file), 0))
+        
+        np.random.shuffle(self.files)
+        
+    def __len__(self):
+        return math.ceil(len(self.files)/self.batch_size)
+    
+    def on_epoch_end(self):
+        np.random.shuffle(self.files)
+    
 
+    def __getitem__(self, index):
 
-    def __next__(self):
-        if self.need_to_shuffle:
-            np.random.shuffle(self.files)
-            self.need_to_shuffle = False
-            self.batch_start_index = 0
-
-
-        if len(self.files)-self.batch_start_index <= self.batch_size:
-            self.need_to_shuffle = True
-            this_batch_size = len(self.files) - self.batch_start_index
+        if len(self.files)-(index*self.batch_size) <= self.batch_size:
+            this_batch_size = len(self.files) - (index*self.batch_size)
         else:
             this_batch_size = self.batch_size
 
@@ -52,14 +51,17 @@ class BatchesIterator(Iterator):
 
         batch_file_names = []
         for x in range(this_batch_size):
-            this_file_name = self.files[self.batch_start_index+x][0]
+            this_file_name = self.files[(index*self.batch_size)+x][0]
             pic = PIL.Image.open(this_file_name)
             pic = np.array(pic)
             batch_x[x]=pic.reshape(3,224,224)
-            batch_y[x]=self.files[self.batch_start_index+x][1]
+            batch_y[x]=self.files[(index*self.batch_size)+x][1]
             batch_file_names.append(this_file_name) 
-        self.batch_start_index+=self.batch_size
-        return batch_x, batch_y, batch_file_names
+            
+        if self.return_dir:
+            return batch_x, batch_y, batch_file_names
+        else:
+            return batch_x, batch_y
     
 
 

@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+#CNN state save
+*.h5
+
 # Distribution / packaging
 .Python
 build/
