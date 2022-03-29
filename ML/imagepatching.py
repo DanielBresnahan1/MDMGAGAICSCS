@@ -45,7 +45,7 @@ class ImagePatcher:
         self.rotBoosting = True
         self.stride = stride
         self.imageSize = imageSize
-    
+        
     def set_save_dir(self, savedir):
         """
         Setter to change save Directory, primarly used for test image patching, as all images need to be split cubicly
@@ -171,7 +171,7 @@ class ImagePatcher:
         
             if crop[0] > 0 and crop[0] < self.imageSize[0] and crop[1] > 0 and crop[1] < self.imageSize[1]:
                 im_crop = im.crop(crop)
-                
+              
                 for a in range(0, 360, 90):
                     
                     rot = im_crop.rotate(a, PIL.Image.BICUBIC, expand=1)
@@ -181,6 +181,7 @@ class ImagePatcher:
                     
                     rot.save(os.path.join(self.saveDir, Folder, 
                                                "{}_{}_{}_{}.jpg".format(image_name, int(crop[0]), int(crop[1]), a)))
+
         
 
 
