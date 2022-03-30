@@ -8,6 +8,7 @@ __pycache__/
 
 #CNN state save
 *.h5
+*/log/
 
 # Distribution / packaging
 .Python
