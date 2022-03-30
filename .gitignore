@@ -9,6 +9,10 @@ __pycache__/
 # C extensions
 *.so
 
+#CNN state save
+*.h5
+*/log/
+
 # Distribution / packaging
 .Python
 build/
