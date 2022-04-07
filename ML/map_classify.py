@@ -9,7 +9,7 @@ import numpy as np
 import os
 import tensorflow as tf
 import PIL
-import Image
+from PIL import Image
 
 class HeatMaper:
     
@@ -30,8 +30,7 @@ class HeatMaper:
         self.count_mapC = None
     
     def load_model(self, model_dir):
-        if os.path.exists(model_dir):
-            model = tf.keras.models.load_model(model_dir)
+        model = tf.keras.models.load_model(model_dir)
         
         return model
     
@@ -122,16 +121,21 @@ if __name__=="__main__":
     original_dir = "images_validation"
     map_folder = "Train_Map"
     map_save_folder = "Train_Map_Classifications"
-    original_dir = os.path.join()
+    model_dir = "E:\\Coding\\MDMGAGAICSCS\\ML"
     
     images_dir = os.path.join(base_dir, map_folder)
     save_dir = os.path.join(base_dir, map_save_folder)
     
-    networkA = 'network_A_1'
-    networkB = 'network_B_1'
-    networkC = 'network_C_1'
+    networkA = 'network_A_1_best_weights.h5'
+    networkB = 'network_B_1_best_weights.h5'
+    networkC = 'network_C_1_best_weights.h5'
     
-    mapper = HeatMapper(images_dir, save_dir, patch_size, )
+    networkA_p = os.path.join(model_dir, networkA)
+    networkB_p = os.path.join(model_dir, networkB)
+    networkC_p = os.path.join(model_dir, networkC)
+    
+    mapper = HeatMaper(images_dir, save_dir, 
+                        patch_size, os.path.join(base_dir, original_dir), networkA_p, networkB_p, networkC_p)
     
     
     
