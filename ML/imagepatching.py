@@ -8,11 +8,13 @@ This is a temporary script file.
 import PIL
 import random
 import os
+from tqdm import tqdm
+import math
 
 class ImagePatcher:
     
-    def __init__(self, saveDir: str, patchSize: tuple, majorAxisDif=4,
-                 stride=10, imageSize=(6000, 4000)):
+    def __init__(self, saveDir: str, patchSize: tuple, majorAxisDif=10,
+                 stride=10, imageSize=(6000, 4000), rotBoosting=True):
         """
         
 
@@ -42,7 +44,7 @@ class ImagePatcher:
         self.majorAxisDif = majorAxisDif
         self.saveDir = saveDir
         self.patchSize = patchSize
-        self.rotBoosting = True
+        self.rotBoosting = rotBoosting
         self.stride = stride
         self.imageSize = imageSize
     
@@ -99,6 +101,30 @@ class ImagePatcher:
         
         return coords
     
+    def patch_stride(self):
+        """
+        Generate a list of coordinates, that representes the center of each patch. 
+        This method will create a grid over the entire image striding the specified stride length
+        This method is used for generating the samples for stage 3 classification (the Heat map)
+
+        Returns
+        -------
+        None.
+
+        """
+        
+        w_patches = math.floor((self.imageSize[0]-self.patchSize[0])/self.stride)+1
+        h_patches = math.floor((self.imageSize[1]-self.patchSize[0])/self.stride)+1
+        
+        coords = []
+        
+        for x in range(0, w_patches):
+            x_mid = int(((x*self.stride)+self.patchSize[0]/2))
+            for y in range(0, h_patches):
+                y_mid = int(((y*self.stride)+self.patchSize[1]/2))
+                coords.append((x_mid ,y_mid ))
+        
+        return coords
     
     def patch_grid(self):
         """
@@ -118,11 +144,11 @@ class ImagePatcher:
         for x in range(0, self.imageSize[0]-difx-self.patchSize[0], self.patchSize[0]):
             for y in range(0, self.imageSize[1]-dify-self.patchSize[1], self.patchSize[1]):
                 coords.append((x+self.patchSize[0]/2, y+self.patchSize[1]/2))
-                
+        
         return coords
     
     
-    def patch(self, imagePath: str, lessionCoords: tuple):
+    def patch(self, imagePath: str, lessionCoords: tuple, sub_folder=False, Map=False):
         """
         Will generate a number of patches from an image, if the image contains
         a lession, it will stride along the major axis of the NLCB and create patches.
@@ -136,12 +162,22 @@ class ImagePatcher:
         lessionCoords : Tuple
             Tuples that contains the coordinates for the lession, of the form
             (x1, y1, x2, y2)
+        sub_folder : Boolean [true]
+            If the iamges should be saved inside a subfolder, or just the parent dir
 
         Returns
         -------
         None.
 
         """
+        
+        def save_image(image, a, Folder):
+            if sub_folder:
+                image.save(os.path.join(self.saveDir, Folder, 
+                                           "{}_{}_{}_{}.jpg".format(image_name, int(crop[0]), int(crop[1]), a)))
+            else:
+                image.save(os.path.join(self.saveDir, 
+                                           "{}_{}_{}_{}.jpg".format(image_name, int(crop[0]), int(crop[1]), a)))
         
         #determine weather or not a lession exists, if 0, there is no lession
         lessionSum = sum(lessionCoords)
@@ -151,17 +187,17 @@ class ImagePatcher:
         if lessionSum:
             Folder = "Positive"
             patch_centers = self.patch_path(*lessionCoords)
-        else:
+        elif not Map:
             Folder = "Negative"
             patch_centers = self.patch_grid()
+        else:
+            patch_centers = self.patch_stride()
         
         im = PIL.Image.open(imagePath)
         
-        print(os.path.basename(imagePath))
-        
         image_name = os.path.basename(imagePath).split(".")[0]
         
-        for x, y in patch_centers:
+        for x, y in tqdm(patch_centers):
             
             x = x + random.randint(-1 * self.majorAxisDif/2, self.majorAxisDif/2)
             y = y + random.randint(-1 * self.majorAxisDif/2, self.majorAxisDif/2)
@@ -169,9 +205,11 @@ class ImagePatcher:
             crop = (x - self.patchSize[0]/2, y - self.patchSize[1]/2,
                                     x + self.patchSize[0]/2, y +  self.patchSize[1]/2)
         
-            if crop[0] > 0 and crop[0] < self.imageSize[0] and crop[1] > 0 and crop[1] < self.imageSize[1]:
+            if crop[0] >= 0 and crop[0] <= self.imageSize[0] and crop[1] >= 0 and crop[1] <= self.imageSize[1]:
+                
                 im_crop = im.crop(crop)
                 
+<<<<<<< Updated upstream
                 for a in range(0, 360, 90):
                     
                     rot = im_crop.rotate(a, PIL.Image.BICUBIC, expand=1)
@@ -181,25 +219,36 @@ class ImagePatcher:
                     
                     rot.save(os.path.join(self.saveDir, Folder, 
                                                "{}_{}_{}_{}.jpg".format(image_name, int(crop[0]), int(crop[1]), a)))
+=======
+                if self.rotBoosting:
+                    for a in range(0, 360, 90):
+                        
+                        rot = im_crop.rotate(a, PIL.Image.BICUBIC, expand=1)
+                        
+                        if not rot.size == self.patchSize:
+                            rot = rot.resize(self.patchSize)
+                        
+                        save_image(rot, a, Folder)
+                else:
+                    save_image(im_crop, 0, Folder)
+                
+                    
+                
+
+>>>>>>> Stashed changes
         
 
 
 if __name__=="__main__":
-    curDir = os.getcwd()
-    image = "DSC00025T.jpg"
-    image_dir = os.path.join(curDir, image)
+    base_dir = "E:\\Coding\\Dataset"
+    image = "DSC00025.jpg"
+    image_dir = os.path.join(base_dir, "images_handheld",  image)
     
-    im = PIL.Image.open(image)
+    patcher = ImagePatcher(os.path.join(base_dir,"Train_Map", "DSC00025"), 
+                           (224, 224), stride=30, imageSize=(6000, 4000), majorAxisDif=0, rotBoosting=False)
     
-    print(im.size)
+    patcher.patch(image_dir, (0, 0, 0, 0), sub_folder=False, Map=True)
     
-    patcher = ImagePatcher(os.path.join(curDir, "save"), (224, 224), imageSize=(6000, 4000))
-    patcher.patch(image_dir, (1864,2064,2864,1648))
-    
-    image = "DSC00027.jpg"
-    image_dir = os.path.join(curDir, image)
-    
-    patcher.patch(image_dir, (0,0,0,0))
         
         
     

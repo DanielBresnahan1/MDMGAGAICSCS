@@ -9,7 +9,7 @@ from imagepatching import ImagePatcher
 import os
 import csv
 import PIL
-from tqdm import tqdm
+
 
 def patch_all(base_dir, annotations_csv, pic_folder, save_folder):
     """
@@ -39,31 +39,34 @@ def patch_all(base_dir, annotations_csv, pic_folder, save_folder):
     
     save_dir = os.path.join(base_dir, save_folder)
     
-    vert_patcher = ImagePatcher(save_dir, (224, 224), imageSize=(6000, 4000))
-    hor_patcher = ImagePatcher(save_dir, (224, 224), imageSize=(4000, 6000))
-    weird_patcher = ImagePatcher(save_dir, (224, 224), imageSize=(5184, 3456))
+    vert_patcher = ImagePatcher(save_dir, (224, 224), imageSize=(6000, 4000), rotBoosting=True)
+    hor_patcher = ImagePatcher(save_dir, (224, 224), imageSize=(4000, 6000), rotBoosting=True)
+    weird_patcher = ImagePatcher(save_dir, (224, 224), imageSize=(5184, 3456), rotBoosting=True)
     
     with open(annotations, "r") as f:
         reader = csv.reader(f)
         
         
-        for line in tqdm(reader):
+        for index, line in enumerate(reader):
+            
+            print("~~~~~Image Number: {}~~~~~~".format(index+1))
+            
             cur_image = os.path.join(pic_locations,line[0])
             
             im = PIL.Image.open(cur_image)
             
             if im.size == (6000, 4000):
-                vert_patcher.patch(cur_image, (int(line[1]), int(line[2]), int(line[3]), int(line[4])))
+                vert_patcher.patch(cur_image, (int(line[1]), int(line[2]), int(line[3]), int(line[4])), sub_folder=True)
             elif im.size == (4000, 6000):
-                hor_patcher.patch(cur_image, (int(line[1]), int(line[2]), int(line[3]), int(line[4])))
+                hor_patcher.patch(cur_image, (int(line[1]), int(line[2]), int(line[3]), int(line[4])), sub_folder=True)
             else:
-                weird_patcher.patch(cur_image, (int(line[1]), int(line[2]), int(line[3]), int(line[4])))
+                weird_patcher.patch(cur_image, (int(line[1]), int(line[2]), int(line[3]), int(line[4])), sub_folder=True)
 
 
 if __name__=="__main__":
     base_dir = "E:\Coding\Dataset"
-    annotations_csv="annotations_test.csv"
-    pic_folder="images_test"
-    save_folder="Test"
+    annotations_csv="annotations_handheld.csv"
+    pic_folder="images_handheld"
+    save_folder="Train"
     patch_all(base_dir, annotations_csv, pic_folder, save_folder)
         
