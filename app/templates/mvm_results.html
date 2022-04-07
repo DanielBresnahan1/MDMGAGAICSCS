@@ -1,22 +1,24 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/feedback_format.css') }}">
+
+
 <body>
     <div class="container">
-		<div class="row border-bottom">
-			<h1 class="font-weight-light pb-3 mb-2 mt-4">Man vs Machine Results</span></h1>
-		</div>
-		<div class="text-right">
+        <div class="row border-bottom">
+            <h1 class="font-weight-light pb-3 mb-2 mt-4">Man vs Machine Results</span>
+            </h1>
+        </div>
+        <div class="text-right">
             <div class="text-left">
-                User Accuracy: {{ user_accuracy }} <br>
-                Machine Accuracy: {{ machine_accuracy }} <br>
+                User Accuracy: {{ user_accuracy }} <br> Machine Accuracy: {{ machine_accuracy }} <br>
             </div>
-			<a href="index.html"><button class="mb-2 mt-4 active_button" data-toggle="tooltip" data-placement="left" title="Go back to the home page and restart training">Home</button></a>
-			<br><br>
-		</div>
+            <div id="chart" class="chart"></div>
+            <a href="index.html"><button class="mb-2 mt-4 active_button" data-toggle="tooltip" data-placement="left" title="Go back to the home page and restart training">Home</button></a>
+            <br><br>
+        </div>
         <div class="container">
-            <h5 class="font-weight-light text-center text-lg-left mt-4 mb-0">Healthy(User):
-                {{ user_healthy_pics|length }} <a href="javascript:void(0)" data-toggle="popover" data-trigger="focus" data-content="Click on image to view full size"> <span class="fa fa-search"></span></a>
+            <h5 class="font-weight-light text-center text-lg-left mt-4 mb-0">Healthy(User): {{ user_healthy_pics|length }}
+                <a href="javascript:void(0)" data-toggle="popover" data-trigger="focus" data-content="Click on image to view full size"> <span class="fa fa-search"></span></a>
             </h5>
 
             <hr class="mt-2 mb-5">
@@ -24,9 +26,7 @@
             <div class="row text-center text-lg-left">
                 {%for i in user_healthy_pics%}
                 <div class="col-lg-3 col-md-4 col-6 d-block mb-4 h-100">
-                    <img class="img-fluid img-rounded"
-                        src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{i}}"
-                        alt="">
+                    <img class="img-fluid img-rounded" src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{i}}" alt="">
                 </div>
                 {%endfor%}
                 <div id="imgModal" class="modal">
@@ -38,8 +38,8 @@
             </div>
         </div>
         <div class="container">
-            <h5 class="font-weight-light text-center text-lg-left mt-4 mb-0">Unhealthy(User):
-                {{ user_unhealthy_pics|length }} <a href="javascript:void(0)" data-toggle="popover" data-trigger="focus" data-content="Click on image to view full size"> <span class="fa fa-search"></span></a>
+            <h5 class="font-weight-light text-center text-lg-left mt-4 mb-0">Unhealthy(User): {{ user_unhealthy_pics|length }}
+                <a href="javascript:void(0)" data-toggle="popover" data-trigger="focus" data-content="Click on image to view full size"> <span class="fa fa-search"></span></a>
             </h5>
 
             <hr class="mt-2 mb-5">
@@ -47,9 +47,7 @@
             <div class="row text-center text-lg-left">
                 {%for i in user_unhealthy_pics%}
                 <div class="col-lg-3 col-md-4 col-6 d-block mb-4 h-100">
-                    <img class="img-fluid img-rounded"
-                        src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{i}}"
-                        alt="">
+                    <img class="img-fluid img-rounded" src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{i}}" alt="">
                 </div>
                 {%endfor%}
                 <div id="imgModal" class="modal">
@@ -61,8 +59,8 @@
             </div>
         </div>
         <div class="container">
-            <h5 class="font-weight-light text-center text-lg-left mt-4 mb-0">Healthy(Machine):
-                {{ machine_healthy_pics|length }} <a href="javascript:void(0)" data-toggle="popover" data-trigger="focus" data-content="Click on image to view full size"> <span class="fa fa-search"></span></a>
+            <h5 class="font-weight-light text-center text-lg-left mt-4 mb-0">Healthy(Machine): {{ machine_healthy_pics|length }}
+                <a href="javascript:void(0)" data-toggle="popover" data-trigger="focus" data-content="Click on image to view full size"> <span class="fa fa-search"></span></a>
             </h5>
 
             <hr class="mt-2 mb-5">
@@ -70,9 +68,7 @@
             <div class="row text-center text-lg-left">
                 {%for i in machine_healthy_pics%}
                 <div class="col-lg-3 col-md-4 col-6 d-block mb-4 h-100">
-                    <img class="img-fluid img-rounded"
-                        src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{i}}"
-                        alt="">
+                    <img class="img-fluid img-rounded" src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{i}}" alt="">
                 </div>
                 {%endfor%}
                 <div id="imgModal" class="modal">
@@ -84,8 +80,8 @@
             </div>
         </div>
         <div class="container">
-            <h5 class="font-weight-light text-center text-lg-left mt-4 mb-0">Unhealthy(Machine):
-                {{ machine_unhealthy_pics|length }} <a href="javascript:void(0)" data-toggle="popover" data-trigger="focus" data-content="Click on image to view full size"> <span class="fa fa-search"></span></a>
+            <h5 class="font-weight-light text-center text-lg-left mt-4 mb-0">Unhealthy(Machine): {{ machine_unhealthy_pics|length }}
+                <a href="javascript:void(0)" data-toggle="popover" data-trigger="focus" data-content="Click on image to view full size"> <span class="fa fa-search"></span></a>
             </h5>
 
             <hr class="mt-2 mb-5">
@@ -93,9 +89,7 @@
             <div class="row text-center text-lg-left">
                 {%for i in machine_unhealthy_pics%}
                 <div class="col-lg-3 col-md-4 col-6 d-block mb-4 h-100">
-                    <img class="img-fluid img-rounded"
-                        src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{i}}"
-                        alt="">
+                    <img class="img-fluid img-rounded" src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{i}}" alt="">
                 </div>
                 {%endfor%}
                 <div id="imgModal" class="modal">
@@ -116,19 +110,27 @@
         var modal = document.getElementById('imgModal');
         var images = document.querySelectorAll(".img-rounded");
         var modalImg = document.getElementById("imgset");
-        for(let i = 0; i < images.length; i++){
-          images[i].onclick = function(){
-            modal.style.display = "block";
-            modalImg.src = this.src;
-          }
+        for (let i = 0; i < images.length; i++) {
+            images[i].onclick = function() {
+                modal.style.display = "block";
+                modalImg.src = this.src;
+            }
         }
 
         var span = document.getElementsByClassName("close")[0];
 
-        span.onclick = function(){
-          modal.style.display = "none";
+        span.onclick = function() {
+            modal.style.display = "none";
         }
-	</script>
+    </script>
 </body>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+    var graphs = {{graphJSON | safe}};
+
+    console.log(graphs.data)
+    Plotly.plot('chart', graphs, {});
+</script>
+
 </html>
 {% endblock %}

@@ -17,6 +17,9 @@ import numpy as np
 import boto3
 import pickle
 from io import StringIO
+import plotly
+import plotly.express as px
+import json
 import random  # TODO: delete me later because i only exist for the architecture walkthrough
 
 bootstrap = Bootstrap(app)
@@ -387,6 +390,16 @@ def mvm_results():
     user_accuracy = user_correct / len(true_labels)
     machine_accuracy = machine_correct / len(true_labels)
 
+    df = pd.DataFrame({
+        'x': [1, 2, 3],
+        'y': [1 ,2 ,3],
+        'z': [3, 2, 1]
+    })
+    fig = px.scatter_3d(x=df['x'], 
+        y=df['y'], 
+        z=df['z'])
+    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
     return render_template('mvm_results.html',
                            user_healthy_pics=[picture_label[0] for picture_label in session['mvm_choices']
                                               if picture_label[1] == 'H'],
@@ -397,11 +410,27 @@ def mvm_results():
                            machine_unhealthy_pics=[picture_label[0] for picture_label in machine_choices
                                                    if picture_label[1] == 'B'],
                            user_accuracy=user_accuracy,
-                           machine_accuracy=machine_accuracy, )
+                           machine_accuracy=machine_accuracy, graphJSON=graphJSON)
 
     health_pic_user, blight_pic_user, health_pic, blight_pic, health_pic_prob, blight_pic_prob = ml_model.infoForResults(train_img_names, test_set)
     return render_template('retrain.html', confidence = "{:.2%}".format(round(session['confidence'],4)), health_user = health_pic_user, blight_user = blight_pic_user, healthNum_user = len(health_pic_user), blightNum_user = len(blight_pic_user), health_test = health_pic, unhealth_test = blight_pic, healthyNum = len(health_pic), unhealthyNum = len(blight_pic), healthyPct = "{:.2%}".format(len(health_pic)/(200-(len(health_pic_user)+len(blight_pic_user)))), unhealthyPct = "{:.2%}".format(len(blight_pic)/(200-(len(health_pic_user)+len(blight_pic_user)))), h_prob = health_pic_prob, b_prob = blight_pic_prob)
 
+def cornGraph():
+    df = pd.DataFrame({
+        "Fruit": ["Apples", "Oranges", "Bananas", "Apples", "Oranges", "Bananas"],
+        "Amount": [4, 1, 2, 2, 4, 5],
+        "City": ["SF", "SF", "SF", "Montreal", "Montreal", "Montreal"]
+    })
+
+    fig = px.bar(df, x="Fruit", y="Amount", color="City", barmode="group")
+
+    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    header="Fruit in North America"
+    description = """
+    A academic study of the number of apples, oranges and bananas in the cities of
+    San Francisco and Montreal would probably not come up with this chart.
+    """
+    return render_template('notdash2.html', graphJSON=graphJSON, header=header,description=description)
 
 @app.route("/restart.html", methods=['GET'])
 def restart():
