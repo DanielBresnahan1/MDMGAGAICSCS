@@ -4,51 +4,56 @@ from sympy import false
 from selenium.common.exceptions import NoSuchElementException
 
 
-driver = webdriver.Firefox()
-driver.get("http://127.0.0.1:5000/")
+def testRandomForestHealthy(url = "http://127.0.0.1:5000/"):
 
-forest = driver.find_element_by_id("forest")
-forest.click()
+    driver = webdriver.Firefox()
+    driver.get(url)
 
-choice0 = driver.find_element_by_id("choice-0")
-choice1 = driver.find_element_by_id("choice-1")
-submit = driver.find_element_by_id("submit")
+    forest = driver.find_element_by_id("forest")
+    forest.click()
 
-    #Assert that they are clickable
-assert choice0.is_enabled
-assert choice1.is_enabled
-choice0.click()
-assert submit.is_enabled
-submit.click()
-
-#Get through all 9
-for i in range(0, 9):
     choice0 = driver.find_element_by_id("choice-0")
     choice1 = driver.find_element_by_id("choice-1")
     submit = driver.find_element_by_id("submit")
 
+        #Assert that they are clickable
     assert choice0.is_enabled
     assert choice1.is_enabled
+    choice0.click()
     assert submit.is_enabled
     submit.click()
 
-healthy = driver.find_element_by_id("healthy")
-unhealthy = driver.find_element_by_id("unhealthy")
-confidence = driver.find_element_by_id("confidence")
-himages = driver.find_elements_by_id("himage")
-uimages = driver.find_elements_by_id("uimage")
-    
+    #Get through all 9
+    for i in range(0, 9):
+        choice0 = driver.find_element_by_id("choice-0")
+        choice1 = driver.find_element_by_id("choice-1")
+        submit = driver.find_element_by_id("submit")
 
-#Test Results
+        assert choice0.is_enabled
+        assert choice1.is_enabled
+        assert submit.is_enabled
+        submit.click()
 
-assert confidence.text == "Confidence: 100.00%"
-assert healthy.text == "Healthy(User): 10"
-assert unhealthy.text == "Unhealthy(User): 0"
-assert len(himages) == 10
-assert len(uimages) == 0
+    healthy = driver.find_element_by_id("healthy")
+    unhealthy = driver.find_element_by_id("unhealthy")
+    confidence = driver.find_element_by_id("confidence")
+    himages = driver.find_elements_by_id("himage")
+    uimages = driver.find_elements_by_id("uimage")
+        
 
-#Make sure to reset cookies
-restart = driver.find_element_by_id("restart")
-restart.click()
+    #Test Results
 
-print("Success")
+    assert confidence.text == "Confidence: 100.00%"
+    assert healthy.text == "Healthy(User): 10"
+    assert unhealthy.text == "Unhealthy(User): 0"
+    assert len(himages) == 10
+    assert len(uimages) == 0
+
+    #Make sure to reset cookies
+    restart = driver.find_element_by_id("restart")
+    restart.click()
+
+    print("Test Random Forest Healthy - Success")
+
+if __name__ == "__main__":
+    testRandomForestHealthy()    
