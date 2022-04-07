@@ -10,6 +10,7 @@ import os
 import tensorflow as tf
 import PIL
 from PIL import Image
+from tqdm import tqdm
 
 class HeatMaper:
     
@@ -17,6 +18,7 @@ class HeatMaper:
         self.images_dir = images_dir
         self.save_dir = save_dir
         self.patch_size = patch_size
+        self.original_dir = original_dir
         self.image_size = (0,0)
         self.current_image = ""
         self.modelA = self.load_model(modelA)
@@ -36,7 +38,9 @@ class HeatMaper:
     
     def new_image(self, image_name):
         self.current_image = image_name
-        imagePath = os.path.join(self.images_dir, self.current_image+".JPG")
+        self.current_image_dir = os.path.join(self.images_dir, self.current_image)
+        imagePath = os.path.join(self.original_dir, self.current_image+".JPG")
+        print(imagePath)
         if os.path.exists(imagePath):
             im = PIL.Image.open(imagePath)
         elif os.path.exists(os.path.join(self.images_dir, self.current_image+".JPEG")):
@@ -54,28 +58,30 @@ class HeatMaper:
         self.count_mapC = np.zeros(self.image_size)
     
     def update_matrices(self, x, y, predA, predB, predC):
-        self.average_mapA[x:self.patch_size[0]+1, y:self.patch_size[1]+1]+=predA
-        self.count_mapA[x:self.patch_size[0]+1, y:self.patch_size[1]+1]+=1
+        self.average_mapA[x:x+self.patch_size[0]+1, y:y+self.patch_size[1]+1]+=predA
+        self.count_mapA[x:x+self.patch_size[0]+1, y:y+self.patch_size[1]+1]+=1
         
-        self.average_mapB[x:self.patch_size[0]+1, y:self.patch_size[1]+1]+=predB
-        self.count_mapB[x:self.patch_size[0]+1, y:self.patch_size[1]+1]+=1
+        self.average_mapB[x:x+self.patch_size[0]+1, y:y+self.patch_size[1]+1]+=predB
+        self.count_mapB[x:x+self.patch_size[0]+1, y:y+self.patch_size[1]+1]+=1
         
-        self.average_mapC[x:self.patch_size[0]+1, y:self.patch_size[1]+1]+=predC
-        self.count_mapC[x:self.patch_size[0]+1, y:self.patch_size[1]+1]+=1
+        self.average_mapC[x:x+self.patch_size[0]+1, y:y+self.patch_size[1]+1]+=predC
+        self.count_mapC[x:x+self.patch_size[0]+1, y:y+self.patch_size[1]+1]+=1
         
     
     def create_map(self, image_name):
         self.new_image(image_name)
     
-        for file in os.listdir(self.image_dir):
+        for file in tqdm(os.listdir(self.current_image_dir)):
+            
             file_parts = file.split("_")
             x_coord = int(file_parts[1])
             y_coord = int(file_parts[2])
             
+            
             pic = PIL.Image.open(os.path.join(self.images_dir, self.current_image, file))
             
             pic = np.array(pic)
-            x=pic.reshape(3,224,224)
+            x=pic.reshape(1, 3,224,224)
             
             predictionA = np.array(self.modelA(x, training=False))
             predictionB = np.array(self.modelB(x, training=False))
@@ -102,10 +108,18 @@ class HeatMaper:
         save_matrixA = np.divide(self.average_mapA, self.count_mapA)
         save_matrixB = np.divide(self.average_mapB, self.count_mapB)
         save_matrixC = np.divide(self.average_mapC, self.count_mapC)
+
+        np.save("savea.npy", save_matrixA)
+        np.save("saveb.npy", save_matrixB)
+        np.save("savec.npy", save_matrixC)
         
         imgA = Image.fromarray(save_matrixA)
         imgB = Image.fromarray(save_matrixB)
         imgC = Image.fromarray(save_matrixC)
+        
+        imgA = imgA.convert("L")
+        imgB = imgB.convert("L")
+        imgC = imgC.convert("L")
         
         imgA.save(os.path.join(save_folder, "modelA.png"))
         imgB.save(os.path.join(save_folder, "modelB.png"))
@@ -115,9 +129,9 @@ class HeatMaper:
             
 
 if __name__=="__main__":
-    patch_size = (224, 244)
+    patch_size = (224, 224)
     base_dir = "E:\\Coding\\Dataset"
-    test_image = "DSC00027"
+    test_image = "DSC00033"
     original_dir = "images_validation"
     map_folder = "Train_Map"
     map_save_folder = "Train_Map_Classifications"
@@ -136,6 +150,30 @@ if __name__=="__main__":
     
     mapper = HeatMaper(images_dir, save_dir, 
                         patch_size, os.path.join(base_dir, original_dir), networkA_p, networkB_p, networkC_p)
+    
+    mapper.create_map(test_image)
+    
+    # new_arrA = np.load("savea.npy")
+    # new_arrA = new_arrA*255
+    
+    # new_arrB = np.load("saveb.npy")
+    # new_arrB = new_arrB*255
+    
+    # new_arrC = np.load("savec.npy")
+    # new_arrC = new_arrB*255
+    
+    
+    # imgA = Image.fromarray(new_arrA)
+    # imgB = Image.fromarray(new_arrB)
+    # imgC = Image.fromarray(new_arrC)
+    
+    # imgA = imgA.convert("L")
+    # imgB = imgB.convert("L")
+    # imgC = imgC.convert("L")
+    
+    # imgA.save(os.path.join("E:\\Coding\\Dataset\\Train_Map_Classifications\\DSC00027", "modelA.png"))
+    # imgB.save(os.path.join("E:\\Coding\\Dataset\\Train_Map_Classifications\\DSC00027", "modelB.png"))
+    # imgC.save(os.path.join("E:\\Coding\\Dataset\\Train_Map_Classifications\\DSC00027", "modelC.png"))
     
     
     
