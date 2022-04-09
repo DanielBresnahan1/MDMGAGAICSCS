@@ -108,10 +108,11 @@ class HeatMaper:
         save_matrixA = np.divide(self.average_mapA, self.count_mapA)
         save_matrixB = np.divide(self.average_mapB, self.count_mapB)
         save_matrixC = np.divide(self.average_mapC, self.count_mapC)
-
-        np.save("savea.npy", save_matrixA)
-        np.save("saveb.npy", save_matrixB)
-        np.save("savec.npy", save_matrixC)
+        
+        save_matrixA = save_matrixA*255
+        save_matrixB = save_matrixB*255
+        save_matrixC = save_matrixC*255
+        
         
         imgA = Image.fromarray(save_matrixA)
         imgB = Image.fromarray(save_matrixB)
@@ -131,7 +132,6 @@ class HeatMaper:
 if __name__=="__main__":
     patch_size = (224, 224)
     base_dir = "E:\\Coding\\Dataset"
-    test_image = "DSC00033"
     original_dir = "images_validation"
     map_folder = "Train_Map"
     map_save_folder = "Train_Map_Classifications"
@@ -151,7 +151,14 @@ if __name__=="__main__":
     mapper = HeatMaper(images_dir, save_dir, 
                         patch_size, os.path.join(base_dir, original_dir), networkA_p, networkB_p, networkC_p)
     
-    mapper.create_map(test_image)
+    
+    
+    for folder in os.listdir(images_dir):
+        if os.path.exists(os.path.join(save_dir, folder)):
+            continue
+        
+        mapper.create_map(folder)
+        
     
     # new_arrA = np.load("savea.npy")
     # new_arrA = new_arrA*255
