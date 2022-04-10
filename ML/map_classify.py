@@ -11,6 +11,8 @@ import tensorflow as tf
 import PIL
 from PIL import Image
 from tqdm import tqdm
+from mapIterator import MapIterator
+import re
 
 class HeatMaper:
     
@@ -33,6 +35,7 @@ class HeatMaper:
     
     def load_model(self, model_dir):
         model = tf.keras.models.load_model(model_dir)
+        model.trainable = False
         
         return model
     
@@ -43,8 +46,8 @@ class HeatMaper:
         print(imagePath)
         if os.path.exists(imagePath):
             im = PIL.Image.open(imagePath)
-        elif os.path.exists(os.path.join(self.images_dir, self.current_image+".JPEG")):
-            im = PIL.Image.open(os.path.join(self.images_dir, image_name+".JPEG"))
+        elif os.path.exists(os.path.join(self.original_dir, self.current_image+".Jpeg")):
+            im = PIL.Image.open(os.path.join(self.original_dir, image_name+".Jpeg"))
         
         self.image_size = im.size
         
@@ -57,37 +60,37 @@ class HeatMaper:
         self.average_mapC = np.zeros(self.image_size)
         self.count_mapC = np.zeros(self.image_size)
     
-    def update_matrices(self, x, y, predA, predB, predC):
-        self.average_mapA[x:x+self.patch_size[0]+1, y:y+self.patch_size[1]+1]+=predA
-        self.count_mapA[x:x+self.patch_size[0]+1, y:y+self.patch_size[1]+1]+=1
+    def update_matrices(self, coords, predictionsA, predictionsB, predictionsC):
         
-        self.average_mapB[x:x+self.patch_size[0]+1, y:y+self.patch_size[1]+1]+=predB
-        self.count_mapB[x:x+self.patch_size[0]+1, y:y+self.patch_size[1]+1]+=1
+        for coord, predA, predB, predC in zip(coords, predictionsA, predictionsB, predictionsC):
         
-        self.average_mapC[x:x+self.patch_size[0]+1, y:y+self.patch_size[1]+1]+=predC
-        self.count_mapC[x:x+self.patch_size[0]+1, y:y+self.patch_size[1]+1]+=1
+            self.average_mapA[coord[0]:coord[0]+self.patch_size[0]+1, coord[1]:coord[1]+self.patch_size[1]+1]+=predA
+            self.count_mapA[coord[0]:coord[0]+self.patch_size[0]+1, coord[1]:coord[1]+self.patch_size[1]+1]+=1
+            
+            self.average_mapB[coord[0]:coord[0]+self.patch_size[0]+1, coord[1]:coord[1]+self.patch_size[1]+1]+=predB
+            self.count_mapB[coord[0]:coord[0]+self.patch_size[0]+1, coord[1]:coord[1]+self.patch_size[1]+1]+=1
+            
+            self.average_mapC[coord[0]:coord[0]+self.patch_size[0]+1, coord[1]:coord[1]+self.patch_size[1]+1]+=predC
+            self.count_mapC[coord[0]:coord[0]+self.patch_size[0]+1, coord[1]:coord[1]+self.patch_size[1]+1]+=1
         
     
     def create_map(self, image_name):
         self.new_image(image_name)
-    
-        for file in tqdm(os.listdir(self.current_image_dir)):
+        
+        mapIter = MapIterator(16, self.current_image_dir)
+        
+        for idx in tqdm(range(len(mapIter))):
             
-            file_parts = file.split("_")
-            x_coord = int(file_parts[1])
-            y_coord = int(file_parts[2])
+            batch_x, file_names = mapIter.__getitem__(idx)
             
             
-            pic = PIL.Image.open(os.path.join(self.images_dir, self.current_image, file))
+            coords = [tuple(map(int, re.findall('\_[0-9]+_[0-9]+_[0-9]+\.', file)[0].split("_")[1:3])) for file in file_names]
             
-            pic = np.array(pic)
-            x=pic.reshape(1, 3,224,224)
+            predictionsA = self.modelA.predict_on_batch(batch_x)
+            predictionsB = self.modelB.predict_on_batch(batch_x)
+            predictionsC = self.modelC.predict_on_batch(batch_x)
             
-            predictionA = np.array(self.modelA(x, training=False))
-            predictionB = np.array(self.modelB(x, training=False))
-            predictionC = np.array(self.modelC(x, training=False))
-            
-            self.update_matrices(x_coord, y_coord, predictionA, predictionB, predictionC)
+            self.update_matrices(coords, predictionsA, predictionsB, predictionsC)
         
         self.save_matrices()
         
@@ -132,9 +135,9 @@ class HeatMaper:
 if __name__=="__main__":
     patch_size = (224, 224)
     base_dir = "E:\\Coding\\Dataset"
-    original_dir = "images_validation"
-    map_folder = "Train_Map"
-    map_save_folder = "Train_Map_Classifications"
+    original_dir = "images_test"
+    map_folder = "Test_Map"
+    map_save_folder = "Train_Map_Heat"
     model_dir = "E:\\Coding\\MDMGAGAICSCS\\ML"
     
     images_dir = os.path.join(base_dir, map_folder)
@@ -156,6 +159,7 @@ if __name__=="__main__":
     for folder in os.listdir(images_dir):
         if os.path.exists(os.path.join(save_dir, folder)):
             continue
+        
         
         mapper.create_map(folder)
         

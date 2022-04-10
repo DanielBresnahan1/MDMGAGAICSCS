@@ -11,16 +11,15 @@ import os
 import PIL
 import math
 
-class TestIterator(Sequence):
-    def __init__(self, batch_size, label,
+class MapIterator(Sequence):
+    def __init__(self, batch_size,
               image_folder_path, return_name=True):
 
         self.batch_size = batch_size
         self.files = []
-        self.label = label
         self.return_name = return_name
         for file in os.listdir(image_folder_path):
-            self.files.append((os.path.join(image_folder_path, file), label))
+            self.files.append(os.path.join(image_folder_path, file))
 
             
     
@@ -36,22 +35,19 @@ class TestIterator(Sequence):
             this_batch_size = self.batch_size
 
         batch_x = np.zeros((this_batch_size,3,224,224), dtype='uint8')
-		
-        batch_y = np.zeros((this_batch_size), dtype='uint8')
 
         batch_file_names = []
         for x in range(this_batch_size):
-            this_file_name = self.files[(index*self.batch_size)+x][0]
+            this_file_name = self.files[(index*self.batch_size)+x]
             pic = PIL.Image.open(this_file_name)
             pic = np.array(pic)
             batch_x[x]=pic.reshape(3,224,224)
-            batch_y[x]=self.label
             batch_file_names.append(this_file_name) 
             
         if self.return_name:
-            return batch_x, batch_y, batch_file_names
+            return batch_x, batch_file_names
         else:
-            return batch_x, batch_y
+            return batch_x
     
 
 
@@ -66,7 +62,7 @@ if __name__=="__main__":
     label = 0
     
     
-    testIter = TestIterator(batch_size, label, image_dir, return_name=True)
+    testIter = MapIterator(batch_size, label, image_dir, return_name=True)
     
     for i in range(len(testIter)):
         x, y, name = testIter.__getitem__(i)

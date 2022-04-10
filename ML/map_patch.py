@@ -26,10 +26,14 @@ def map_split(directory, annotations_csv, save_dir, save_csv):
         # print(image)
         cur_image = os.path.join(directory,image)
         
+        new_dir = os.path.join(save_dir, image.split(".")[0])
+        if os.path.exists(new_dir):
+            continue
+        
+        os.mkdir(new_dir)
+        
         im = PIL.Image.open(cur_image)
         
-        new_dir = os.path.join(save_dir, image.split(".")[0])
-        os.mkdir(new_dir)
         
         if im.size == (6000, 4000):
             vert_patcher.set_save_dir(new_dir)
@@ -54,15 +58,15 @@ def map_split(directory, annotations_csv, save_dir, save_csv):
 
 if __name__=="__main__":
     base_dir = "E:\\Coding\\Dataset"
-    annotations_csv="annotations_val.csv"
-    pic_folder="images_validation"
-    save_folder="Train_Map"
+    annotations_csv="annotations_test.csv"
+    pic_folder="images_test"
+    save_folder="Test_Map"
     
     image_dir = os.path.join(base_dir, pic_folder) 
     acsv_dir = os.path.join(base_dir, annotations_csv)
     save_dir = os.path.join(base_dir, save_folder)
     
-    save_csv = "train_map.csv"
+    save_csv = "test_map.csv"
     scsv_dir = os.path.join(base_dir, save_csv)
     
     
