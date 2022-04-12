@@ -1,7 +1,22 @@
+##
+# @file testRandomForestUnhealthy.py
+#
+# @brief Tests random forest functionality with only unhealthy inputs
+#
+# @section author_sensors Author(s)
+# - Created by Gabe Drew on 04/06/2022.
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
+
+## Documentation for a testRandomForestUnhealthy
+#
+#  Tests the 
 def testRandomForestUnhealthy(url = "http://127.0.0.1:5000/"):
+
+    """! Tests Random Forest functionality.
+    @param url  The url which the test will attempt to reach.
+    """
 
     driver = webdriver.Firefox()
     driver.get(url)
