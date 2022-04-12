@@ -1,8 +1,21 @@
+##
+# @file testCookies.py
+#
+# @brief Tests that the required cookies are working. 
+#
+# @section author_sensors Author(s)
+# - Created by Gabe Drew on 04/06/2022.
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
 
 def testCookies(url = "http://127.0.0.1:5000/"):
+    """! Tests cookies functionality
+        This test will boot a selenium driver, access the application at the specified url, and ensure that the necessary aspects of the cookies are functional.
+        It will do this by going through the entire random forest section, returning to the beginning, and running thorugh the random forest section a second time.
+        It will check that the second time it is only presented with five images, and that the ten specified images from before also appear.
+    @param url: The url which the test will attempt to reach. Defaults to a local url.
+    """
     driver = webdriver.Firefox()
     driver.get(url)
 

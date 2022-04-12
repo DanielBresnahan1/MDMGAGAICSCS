@@ -1,0 +1,39 @@
+\hypertarget{test_random_forest_unhealthy_8py}{}\doxysection{test\+Random\+Forest\+Unhealthy.\+py File Reference}
+\label{test_random_forest_unhealthy_8py}\index{testRandomForestUnhealthy.py@{testRandomForestUnhealthy.py}}
+
+
+Tests random forest functionality with only unhealthy inputs.  
+
+
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{test_random_forest_unhealthy_8py_ab47d3b586c5c57f261c3bbd2f1e0f512}{test\+Random\+Forest\+Unhealthy.\+test\+Random\+Forest\+Unhealthy}} (url=\char`\"{}http\+://127.\+0.\+0.\+1\+:5000/\char`\"{})
+\begin{DoxyCompactList}\small\item\em Tests Random Forest functionality. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Tests random forest functionality with only unhealthy inputs. 
+
+\hypertarget{test_random_forest_unhealthy_8py_author_sensors}{}\doxysubsection{Author(s)}\label{test_random_forest_unhealthy_8py_author_sensors}
+
+\begin{DoxyItemize}
+\item Created by Gabe Drew on 04/06/2022. 
+\end{DoxyItemize}
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{test_random_forest_unhealthy_8py_ab47d3b586c5c57f261c3bbd2f1e0f512}\label{test_random_forest_unhealthy_8py_ab47d3b586c5c57f261c3bbd2f1e0f512}} 
+\index{testRandomForestUnhealthy.py@{testRandomForestUnhealthy.py}!testRandomForestUnhealthy@{testRandomForestUnhealthy}}
+\index{testRandomForestUnhealthy@{testRandomForestUnhealthy}!testRandomForestUnhealthy.py@{testRandomForestUnhealthy.py}}
+\doxysubsubsection{\texorpdfstring{testRandomForestUnhealthy()}{testRandomForestUnhealthy()}}
+{\footnotesize\ttfamily def test\+Random\+Forest\+Unhealthy.\+test\+Random\+Forest\+Unhealthy (\begin{DoxyParamCaption}\item[{}]{url = {\ttfamily \char`\"{}http\+://127.0.0.1\+:5000/\char`\"{}} }\end{DoxyParamCaption})}
+
+
+
+Tests Random Forest functionality. 
+
+This test will boot a selenium driver, access the application at the specified url, and run through the random forest code selecting only unhealthy. It will then double check that there are ten unhealthy images, zero healthy images, and that the confidence of the model is 100\%. 
+\begin{DoxyParams}{Parameters}
+{\em url} & The url which the test will attempt to reach. Defaults to a local url. \\
+\hline
+\end{DoxyParams}

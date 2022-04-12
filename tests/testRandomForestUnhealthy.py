@@ -9,13 +9,12 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
 
-## Documentation for a testRandomForestUnhealthy
-#
-#  Tests the 
 def testRandomForestUnhealthy(url = "http://127.0.0.1:5000/"):
 
     """! Tests Random Forest functionality.
-    @param url  The url which the test will attempt to reach.
+        This test will boot a selenium driver, access the application at the specified url, and run through the random forest code selecting only unhealthy.
+        It will then double check that there are ten unhealthy images, zero healthy images, and that the confidence of the model is 100%.
+    @param url: The url which the test will attempt to reach. Defaults to a local url.
     """
 
     driver = webdriver.Firefox()

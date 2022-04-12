@@ -1,3 +1,10 @@
+##
+# @file testRandomForestRandom.py
+#
+# @brief Tests random forest functionality with a random mix of healthy and unhealthy inputs
+#
+# @section author_sensors Author(s)
+# - Created by Gabe Drew on 04/06/2022.
 import random
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -6,6 +13,11 @@ from selenium.common.exceptions import NoSuchElementException
 
 def testRandomForestRandom(url = "http://127.0.0.1:5000/"):    
     
+    """! Tests Random Forest functionality.
+        This test will boot a selenium driver, access the application at the specified url, and run through the random forest code selecting healthy and unhealthy randomly.
+        It will then double check that there are the correct number of healthy and unhealthy images.
+    @param url: The url which the test will attempt to reach. Defaults to a local url.
+    """
     times0 = 0
     times1 = 0
     def choice(choice0, choice1, times0, times1):
