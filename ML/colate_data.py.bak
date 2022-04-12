@@ -65,8 +65,14 @@ def patch_all(base_dir, annotations_csv, pic_folder, save_folder):
 
 if __name__=="__main__":
     base_dir = "E:\Coding\Dataset"
+<<<<<<< HEAD
     annotations_csv="annotations_handheld.csv"
     pic_folder="images_handheld"
     save_folder="Train"
+=======
+    annotations_csv="annotations_test.csv"
+    pic_folder="images_test"
+    save_folder="Test"
+>>>>>>> dev
     patch_all(base_dir, annotations_csv, pic_folder, save_folder)
         
