@@ -5,13 +5,11 @@ Created on Sun Feb 13 23:30:09 2022
 @author: Daniel Bresnahan
 """
 import os
-from torch.utils.data import Dataset
-from torchvision import datasets, transforms, io
+
 import pandas as pd
-import torch
 
 
-class CornDataset(Dataset):
+class CornDataset():
     """ Corn with and without NCLB Dataset"""
     
     def __init__(self, csv_file, root_dir, transform=None):
@@ -51,23 +49,33 @@ class CornDataset(Dataset):
 
         """
         
-        if torch.is_tensor(idx):
-            idx = idx.tolist()
         
         label = sum(self.img_labels.iloc[idx, 1:5])
         
         if label:
             label = 1
             
-        img_path = os.path.join(self.root_dir, self.img_labels.iloc[idx, 0])
-        image = io.read_image(img_path)
         
-        if self.transform:
-            image = self.transform(image)
-        
-        return image, label
+        return label
         
         
+if __name__=="__main__":
+    csv = "E:\\Coding\\Dataset\\annotations_test.csv"
+    root_dir = "E:\\Coding\\Dataset"
+    data = CornDataset(csv, root_dir)
+    
+    num_pos = 0
+    num_neg = 0
+    
+    for i in range(len(data)):
+        label = data.__getitem__(i)
+        
+        if label == 0:
+            num_neg += 1
+        else:
+            num_pos += 1
+            
+    print("Number Positive Samples: {} \n Number Negative Samples: {}".format(num_pos, num_neg))
         
         
         

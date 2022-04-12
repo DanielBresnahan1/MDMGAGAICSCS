@@ -7,19 +7,31 @@ Created on Mon Mar 21 17:39:38 2022
 
 from tensorflow import keras
 from batches_iterator import BatchesIterator
+import shutil
+import os
+from tqdm import tqdm
 
-model = keras.models.load_model('network_T_1_best_weights.h5', compile=False)
+model = keras.models.load_model('network_A_1_best_weights.h5', compile=False)
 
-valid_lesion_dir = "E:\\Coding\\Dataset\\Validation\\Positive"
-valid_no_lesion_dir = "E:\\Coding\\Dataset\\Validation\\Negative"
+test_lesion_dir = "E:\\Coding\\Dataset\\Test\\Positive"
+test_no_lesion_dir = "E:\\Coding\\Dataset\\Test\\Negative"
 valid_batch_size = 1
 
-valid_batches = BatchesIterator(valid_batch_size,valid_no_lesion_dir,valid_lesion_dir, no_lesion=False)
+train_dest = "E:\\Coding\\Dataset\\Test\\Copy"
 
-for i in range(3):
-    x, y, file = next(valid_batches)
-    label = model(x, training=False)
+valid_batches = BatchesIterator(valid_batch_size,test_no_lesion_dir,test_lesion_dir,
+                                no_lesion=False, return_dir=True)
+
+print("Files before hard mining: {}".format(len(os.listdir(train_dest))))
+for i in tqdm(range(len(valid_batches))):
+    x, y, path = valid_batches.__getitem__(i)
+    predict = model(x, training=False)
     
-    print("File: {} , Label: {}".format(file, label))
     
+    if y[0] == 1 and predict[0][0] < 0.5:
+        # print(type(path[0]))
+        shutil.copyfile(path[0], os.path.join(train_dest, os.path.basename(path[0])))
+
+print("Files after hard mining: {}".format(len(os.listdir(train_dest))))
+        
 

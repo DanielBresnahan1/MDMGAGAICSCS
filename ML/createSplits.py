@@ -30,21 +30,44 @@ def find_unique(annotations):
 def dict_split(train, test, val):
     
     removed_set = []
-    for i in range(int(len(train.keys())*0.33)):
-        
-        while True:    
-            key = random.randint(0, len(train.keys())-1)
-            key_s = list(train.keys())[key]
+    val_negative = 0
+    test_negative = 0
+    val_positive = 0
+    test_positive = 0
+    keys_noshuffle = list(train.keys())
+    keys = list(train.keys())
+    
+    random.shuffle(keys)
+    
+    for idx, key in enumerate(keys):
+
+        coord_list = [int(c) for c in train[key][0][1:5]]
+        if all(coord_list):
             
-            if key not in removed_set:
-                removed_set.append(key)
+            if test_positive < 100:
+                removed_set.append(keys.index(key))
+                test_positive += 1
+                test.update({key:train[key]})
+            elif val_positive < 100:
+                removed_set.append(keys.index(key))
+                val_positive += 1
+                val.update({key:train[key]})
+        
+        elif not all(coord_list):
+            
+            if test_negative < 100:
+                removed_set.append(keys.index(key))
+                test_negative += 1
+                test.update({key:train[key]})
+            elif val_negative < 100:
+                removed_set.append(keys.index(key))
+                val_negative += 1
+                val.update({key:train[key]})
+        
+        if val_positive >= 100 and test_positive >= 100 and val_negative >= 100 and test_negative >= 100:
+            break
+        
                 
-                if i%2:
-                    test.update({key_s:train[key_s]})
-                else:
-                    val.update({key_s:train[key_s]})
-                
-                break
     
     return removed_set
 
@@ -89,6 +112,7 @@ if __name__=="__main__":
     
     train = find_unique(annotations)
     removed_set = dict_split(train, test, val)
+    
     clean_dict(removed_set, train)
     
     train_annotations = os.path.join(base_dir, "annotations_train.csv")
