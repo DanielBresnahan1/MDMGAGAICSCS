@@ -26,6 +26,11 @@ def map_split(directory, annotations_csv, save_dir, save_csv):
         # print(image)
         cur_image = os.path.join(directory,image)
         
+        if sum([int(c) for c in unique_images[image][0][1:5]]):
+            new_csv.append([image, 1])
+        else:
+            new_csv.append([image, 0])
+        
         new_dir = os.path.join(save_dir, image.split(".")[0])
         if os.path.exists(new_dir):
             continue
@@ -45,10 +50,6 @@ def map_split(directory, annotations_csv, save_dir, save_csv):
             weird_patcher.set_save_dir(new_dir)
             weird_patcher.patch(cur_image, (0, 0, 0, 0), sub_folder=False, Map=True)
         
-        if sum([int(c) for c in unique_images[image][0][1:5]]):
-            new_csv.append([image, 1])
-        else:
-            new_csv.append([image, 0])
         
         
     if save_csv:
