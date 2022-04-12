@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.3"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>My Project: README</title>
+<title>Ag-AI: README</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">My Project
+   <div id="projectname">Ag-AI
    </div>
   </td>
  </tr>
@@ -69,7 +69,7 @@ $(function() {
 <p >#Release Notes Milestone 2: –Random Forest Saving– Ahead of schedule, we implemented the saving of user training of the random forest algorithm, and added additional necessary functionality to the app to back the saving, such as the reset button. &ndash;Man versus Machine&ndash; Play against a dummy AI by clicking the second button on the home screen. User is then tasked with classifying a series of corn images. Finally, the user is taken to a results page to view the statistics and the machine's selections.</p>
 <p >–Professional Neural Network Implementation of Model A is complete, which you can view in the file ModelA.py. To train simply run the script, as the implementation is located within “if <b>name</b>==”__main__”:”</p>
 <p >–Split generation The file createSplits is responsible for organizing the total data into 70% train 15% validate and 15% test. To call, make sure your directory is structure as →images_handheld →Train →Test →Validate handheld_annotations.csv And then run the file.</p>
-<p >–Batches Iterator batches_iterator.py (and batches_iterator_half_no_lesion.py, but that is broken as of yet) is responsible for handling all batch processing for training the neural networks. It will select n/2 number of positive and n/2 number of negative samples to train the neural network. Additionally, the file will correctly parse and format the image data into numpy arrays of size (3,224,224). When the iterator runs out of images to push for training, it will reshuffle the image list and continue. To use, simply importBatchesIterator from batches_iterator, and instantiate the class with parameters for batch size and directory path. Then, call next() on the saved object. <br  />
+<p >–Batches Iterator batches_iterator.py (and batches_iterator_half_no_lesion.py, but that is broken as of yet) is responsible for handling all batch processing for training the neural networks. It will select n/2 number of positive and n/2 number of negative samples to train the neural network. Additionally, the file will correctly parse and format the image data into numpy arrays of size (3,224,224). When the iterator runs out of images to push for training, it will reshuffle the image list and continue. To use, simply importBatchesIterator from <a class="el" href="namespacebatches__iterator.html">batches_iterator</a>, and instantiate the class with parameters for batch size and directory path. Then, call next() on the saved object. <br  />
 </p>
 <p >–3D Visualization This class will be added to the webpage at a later date but currently if you manually run the python script you can see a demo of the Visualization. The user will interact with a web-based user interface, where they’ll be asked to label pictures of corn as either healthy or unhealthy.</p>
 <p >&ndash;Random Forest Retraining&ndash; To retrain the random forest algorithm, first create a random forest model by classifying images presented by webapp. Once enough confidence is reached, results screen for the model will show. Scroll down until one is able to see the test images the model classified itself, not the training set provided by the user. Use checkboxes to disagree with pictures labeled by model, then scroll down to bottom of page and select "retrain" button.</p>
