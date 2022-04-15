@@ -85,20 +85,19 @@ class HeatMaper:
         self.new_image(image_name)
         self.create_matrices()
         
-        mapIter = MapIterator(16, self.current_image_dir)
+        batch_size = 32
         
-        for idx in tqdm(range(len(mapIter))):
+        mapIter = MapIterator(batch_size, self.current_image_dir, return_name=False)
             
-            batch_x, file_names = mapIter.__getitem__(idx)
+        coords = [tuple(map(int, re.findall('\_[0-9]+_[0-9]+_[0-9]+\.', file)[0].split("_")[1:3])) for file in mapIter.files]
+        
+        predictionsA = self.modelA.predict(mapIter, steps=len(mapIter), batch_size=batch_size, verbose=1)
+        predictionsB = self.modelB.predict(mapIter, steps=len(mapIter), batch_size=batch_size, verbose=1)
+        predictionsC = self.modelC.predict(mapIter, steps=len(mapIter), batch_size=batch_size, verbose=1)
             
-            
-            coords = [tuple(map(int, re.findall('\_[0-9]+_[0-9]+_[0-9]+\.', file)[0].split("_")[1:3])) for file in file_names]
-            
-            predictionsA = self.modelA.predict_on_batch(batch_x)
-            predictionsB = self.modelB.predict_on_batch(batch_x)
-            predictionsC = self.modelC.predict_on_batch(batch_x)
-            
-            self.update_matrices(coords, predictionsA, predictionsB, predictionsC)
+        self.update_matrices(coords, predictionsA, predictionsB, predictionsC)
+        
+        exit()
         
         self.save_matrices()
         
@@ -163,10 +162,7 @@ if __name__=="__main__":
     
     
     
-    for folder in os.listdir(images_dir):
-        if os.path.exists(os.path.join(save_dir, folder)):
-            continue
-        
+    for folder in os.listdir(images_dir):     
         
         mapper.create_map(folder)
         
