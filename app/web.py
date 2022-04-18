@@ -2,6 +2,7 @@
 """@package web
 This method is responsible for the inner workings of the different web pages in this application.
 """
+import io
 from flask import Flask
 from flask import render_template, flash, redirect, url_for, session, request, jsonify
 from app import app
@@ -16,7 +17,11 @@ import os
 import numpy as np
 import boto3
 import pickle
-from io import StringIO
+from io import BytesIO, StringIO
+from PIL import Image
+import PIL
+import requests
+import csv
 import random  # TODO: delete me later because i only exist for the architecture walkthrough
 
 bootstrap = Bootstrap(app)
@@ -39,6 +44,49 @@ def getData():
 
     data_mod = data.astype({'8': 'int32', '9': 'int32', '10': 'int32', '12': 'int32', '14': 'int32'})
     return data_mod.iloc[:, :-1]
+
+def getImage(image):
+    """
+    Gets and returns the csvOut.csv as a DataFrame.
+
+    Returns
+    -------
+    data : Pandas DataFrame
+        The data that contains the features for each image.
+    """
+    
+    url = "https://mdmgcapstone.s3.amazonaws.com/"
+    image = "predictionA.png"
+    a = 0
+    b = 0
+    c = 0
+    mapA = 0
+    mapB = 0
+    mapC = 0
+    label = 0
+    with open('eggs.csv', newline='') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',')
+        for row in reader:
+            if(row[0] == image):
+                a = row[1]
+                b = row[2]
+                c = row[3]
+                mapA = row[4]
+                mapB = row[5]
+                mapC = row[6]
+                label = row[7]
+    
+                responseA = requests.get(url + mapA)
+                responseB = requests.get(url + mapB)
+                responseC = requests.get(url + mapC)
+                imgA = Image.open(BytesIO(responseA.content))
+                imgB = Image.open(BytesIO(responseB.content))
+                imgC = Image.open(BytesIO(responseC.content))
+                break
+    
+    return [a,b,c,imgA,imgB,imgC,label]
+
+
 
 
 def createMLModel(data):
@@ -223,6 +271,7 @@ def home():
     """
     session.permanent = True
     #session.pop('model', None)
+    getImage("test")
     return render_template('index.html')
 
 
