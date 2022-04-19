@@ -55,8 +55,8 @@ def getImage(image):
         The data that contains the features for each image.
     """
     
-    url = "https://mdmgcapstone.s3.amazonaws.com/"
-    image = "predictionA.png"
+    url = "https://mdmgcapstone.s3.amazonaws.com/Test_Map_Heat/"
+    image = "DSC00030"
     a = 0
     b = 0
     c = 0
@@ -64,17 +64,19 @@ def getImage(image):
     mapB = 0
     mapC = 0
     label = 0
-    with open('eggs.csv', newline='') as csvfile:
+    trueLabel = 0
+    with open('./app/heatmapAccessData.csv', newline='') as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
         for row in reader:
             if(row[0] == image):
                 a = row[1]
                 b = row[2]
                 c = row[3]
-                mapA = row[4]
-                mapB = row[5]
-                mapC = row[6]
-                label = row[7]
+                mapA = image + "/predictionA.png"
+                mapB = image + "/predictionB.png"
+                mapC = image + "/predictionC.png"
+                label = row[4]
+                trueLabel = row[5]
     
                 responseA = requests.get(url + mapA)
                 responseB = requests.get(url + mapB)
@@ -84,7 +86,7 @@ def getImage(image):
                 imgC = Image.open(BytesIO(responseC.content))
                 break
     
-    return [a,b,c,imgA,imgB,imgC,label]
+    return [a,b,c,imgA,imgB,imgC,label, trueLabel]
 
 
 
@@ -271,7 +273,6 @@ def home():
     """
     session.permanent = True
     #session.pop('model', None)
-    getImage("test")
     return render_template('index.html')
 
 
