@@ -1,0 +1,11 @@
+body {
+    background: url('/static/styles/bgimageblur.jpg');
+    background-size: cover;
+}
+
+.b-example-divider {
+  height: 1rem;
+  background-color: rgba(0, 0, 0, .1);
+  border-width: 1px 0;
+  margin-bottom: 1rem;
+}
