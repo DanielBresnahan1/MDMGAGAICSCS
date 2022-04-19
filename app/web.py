@@ -70,7 +70,6 @@ def getImage(image):
     """
     
     url = "https://mdmgcapstone.s3.amazonaws.com/Test_Map_Heat/"
-    image = "DSC00030"
     x = 0
     y = 0
     z = 0
