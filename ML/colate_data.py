@@ -10,22 +10,22 @@ import os
 import csv
 import PIL
 
-
-def patch_all(base_dir, annotations_csv, pic_folder, save_folder):
+def patch_all(base_dir: str, annotations_csv: str, pic_folder: str, save_folder: str):
     """
-    Patch_all will go through all the files listed in the data csv. 
-    At this point, it assumes that the header has been removed from the csv.
+    patch_all is a testing script, that will iterate through each file described 
+    at base_dir/annotations_csv. And perform patching with an ImagePatcher. 
+    
 
     Parameters
     ----------
-    base_dir : TYPE
-        DESCRIPTION.
-    annotations_csv : TYPE
-        DESCRIPTION.
-    pic_folder : TYPE
-        DESCRIPTION.
-    save_folder : TYPE
-        DESCRIPTION.
+    base_dir : str
+        path of base dir, which every file and folder reside in.
+    annotations_csv : str
+        Name of the annotations csv, which contains all file labels and coords.
+    pic_folder : str
+        Name of folder which contains images to patch.
+    save_folder : str
+        Name of folder to save patched images to.
 
     Returns
     -------
