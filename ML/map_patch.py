@@ -25,11 +25,20 @@ def map_split(directory, annotations_csv, save_dir, save_csv):
         print("~~~~Image Number: {}~~~~~".format(index))
         # print(image)
         cur_image = os.path.join(directory,image)
+
+        if sum([int(c) for c in unique_images[image][0][1:5]]):
+            new_csv.append([image, 1])
+        else:
+            new_csv.append([image, 0])
+        
+        new_dir = os.path.join(save_dir, image.split(".")[0])
+        if os.path.exists(new_dir):
+            continue
+        
+        os.mkdir(new_dir)
         
         im = PIL.Image.open(cur_image)
         
-        new_dir = os.path.join(save_dir, image.split(".")[0])
-        os.mkdir(new_dir)
         
         if im.size == (6000, 4000):
             vert_patcher.set_save_dir(new_dir)
@@ -41,10 +50,6 @@ def map_split(directory, annotations_csv, save_dir, save_csv):
             weird_patcher.set_save_dir(new_dir)
             weird_patcher.patch(cur_image, (0, 0, 0, 0), sub_folder=False, Map=True)
         
-        if sum([int(c) for c in unique_images[image][0][1:5]]):
-            new_csv.append([image, 1])
-        else:
-            new_csv.append([image, 0])
         
         
     if save_csv:
@@ -54,15 +59,16 @@ def map_split(directory, annotations_csv, save_dir, save_csv):
 
 if __name__=="__main__":
     base_dir = "E:\\Coding\\Dataset"
-    annotations_csv="annotations_val.csv"
-    pic_folder="images_validation"
-    save_folder="Train_Map"
+    annotations_csv="annotations_test.csv"
+    pic_folder="images_test"
+    save_folder="Test_Map"
     
     image_dir = os.path.join(base_dir, pic_folder) 
     acsv_dir = os.path.join(base_dir, annotations_csv)
     save_dir = os.path.join(base_dir, save_folder)
     
-    save_csv = "train_map.csv"
+    save_csv = "test_map.csv"
+
     scsv_dir = os.path.join(base_dir, save_csv)
     
     
