@@ -10,7 +10,6 @@ import os
 import csv
 import PIL
 
-
 def patch_all(base_dir: str, annotations_csv: str, pic_folder: str, save_folder: str):
     """
     patch_all is a testing script, that will iterate through each file described 

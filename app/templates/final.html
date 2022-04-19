@@ -10,9 +10,9 @@
 		</div>
 		<div class="text-right">
 			<a href="index.html"><button class="mb-2 mt-4 active_button" data-toggle="tooltip" data-placement="left" title="Go back to the home page and restart training">Home</button></a>
-			<a href="restart.html"><button class="mb-2 mt-4 active_button">Restart</button></a>
+			<a href="restart.html"><button class="mb-2 mt-4 active_button" id = "restart">Restart</button></a>
 			<br><br>
-			<h5 class="font-weight-normal">Confidence: {{confidence}}
+			<h5 class="font-weight-normal" id = "confidence">Confidence: {{confidence}}
 			{% if confidence == 1 %}
 			<a href="javascript:void(0)" data-toggle="popover" data-trigger="focus" data-content="This confidence level indicates you missed all labels or you gave the same label for all training images.">
                             <span class="fa fa-info-circle" style="font-size:24px"></span></h5></a>
@@ -23,7 +23,7 @@
 		</div>
         <div class="container">
 
-			<h5 class="font-weight-light text-center text-lg-left mt-4 mb-0">Healthy(User):
+			<h5 id = "healthy" class="font-weight-light text-center text-lg-left mt-4 mb-0">Healthy(User):
 				{{healthNum_user}} <a href="javascript:void(0)" data-toggle="popover" data-trigger="focus" data-content="Click on image to view full size"> <span class="fa fa-search"></span></a>
             </h5>
 
@@ -31,7 +31,7 @@
 
 			<div class="row text-center text-lg-left">
 				{%for i in health_user%}
-				<div class="col-lg-3 col-md-4 col-6 d-block mb-4 h-100">
+				<div id = "himage" class="col-lg-3 col-md-4 col-6 d-block mb-4 h-100">
 					<img class="img-fluid img-rounded"
 						src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{i}}"
 						alt="">
@@ -47,7 +47,7 @@
 		</div>
 		<div class="container">
 
-			<h5 class="font-weight-light text-center text-lg-left mt-4 mb-0">Unhealthy(User):
+			<h5 id = "unhealthy" class="font-weight-light text-center text-lg-left mt-4 mb-0">Unhealthy(User):
 				{{blightNum_user}} <a href="javascript:void(0)" data-toggle="popover" data-trigger="focus" data-content="Click on image to view full size"> <span class="fa fa-search"></span></a>
             </h5>
 
@@ -55,7 +55,7 @@
 
 			<div class="row text-center text-lg-left">
 				{%for i in blight_user%}
-				<div class="col-lg-3 col-md-4 col-6 d-block mb-4 h-100">
+				<div id = "uimage" class="col-lg-3 col-md-4 col-6 d-block mb-4 h-100">
 					<img class="img-fluid img-rounded"
 						src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{i}}"
 						alt="">
