@@ -3,6 +3,9 @@
 Created on Thu Mar 31 19:13:56 2022
 
 @author: Danie
+
+keras Sequence Iterator responsible for iterating through the folders that contain the heat maps, generated
+by heatMapper
 """
 
 from tensorflow.keras.utils import Sequence
@@ -13,12 +16,32 @@ import math
 import csv
 import random
 
-"""@package
-Keras Sequence Iterator for heat map images, for training the final model
-"""
+
 class TestIterator(Sequence):
-    def __init__(self, batch_size, csv_dir,
-              image_folder_path, return_name=False, preserve_image=False):
+    def __init__(self, batch_size: int, csv_dir: str,
+              image_folder_path: str, return_name=False, preserve_image=False):
+        """
+        Constructor for TestIterator
+
+        Parameters
+        ----------
+        batch_size : int
+            size of batch, aka number of files per batch.
+        csv_dir : str
+            Path to csv file.
+        image_folder_path : str
+            Path to folder containing subdirs, which themselves contain the heatmaps.
+        return_name : BOOLEAN, optional
+            FOR TESTING, return the names of the files in each batch. The default is False.
+        preserve_image : BOOL, optional
+            If shuffling should occur at the end of epoch
+            Should be True for training, false for prediction. The default is False.
+
+        Returns
+        -------
+        None.
+
+        """
 
         self.batch_size = batch_size
         self.files = []
@@ -32,10 +55,27 @@ class TestIterator(Sequence):
                 self.files.append((os.path.join(image_folder_path, folder, file), self.labels[folder]))
    
     
-    def __len__(self):
+    def __len__(self) -> int:
+        """
+        Return the number of batches in the dataset, the number of steps per epoch
+
+        Returns
+        -------
+        int
+            number of batches in the dataset.
+
+        """
         return math.ceil(len(self.files)/self.batch_size)
     
     def get_labels(self):
+        """
+        Open the csv file and extract the labels, add them to a dictioinary with the image name as key
+
+        Returns
+        -------
+        None.
+
+        """
         
         with open(self.csv_dir, "r") as f:
             reader = csv.reader(f)
@@ -44,10 +84,35 @@ class TestIterator(Sequence):
                 self.labels.update({row[0].split(".")[0]:int(row[1])})
         
     def on_epoch_end(self):
+        """
+        Function that runs conditionally at the end of each epoch, shuffles the data
+
+        Returns
+        -------
+        None.
+
+        """
         if not self.preserve_image:
             random.shuffle(self.files)
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int) -> [np.ndarray, np.ndarray]:
+        """
+        The meat of the iterator, will return numpy arrays contianing the batch X, and Batch Y 
+        associated with the current batch index.
+
+        Parameters
+        ----------
+        index : int
+            The batch index, 0 < index < len.
+
+        Returns
+        -------
+        Tuple[np.ndarray, np.ndarray]
+            Tuple containing batch X and batch Y.
+            X is of the form (batch_size, 1, 193, 126)
+            Y is the form (batch_size, )
+
+        """
 
         if len(self.files)-(index*self.batch_size) <= self.batch_size:
             this_batch_size = len(self.files) - (index*self.batch_size)

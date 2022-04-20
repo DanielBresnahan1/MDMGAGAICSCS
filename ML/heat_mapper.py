@@ -3,6 +3,9 @@
 Created on Wed Apr  6 16:07:07 2022
 
 @author: Danie
+
+This file contains definition for the HeatMapper class, which is responsible for generating
+the heat maps by utilizing pretrained models
 """
 
 import numpy as np
@@ -13,97 +16,177 @@ from PIL import Image
 from tqdm import tqdm
 from mapIterator import MapIterator
 import re
+from tensorflow.keras import Sequential
 
-
-"""@package docstring
-This class represents
-
-"""
 
 class HeatMaper:
     
-    def __init__(self, images_dir, save_dir, original_dir, modelA, modelB, modelC, patch_size=(224, 224)):
+    def __init__(self, images_dir: str, save_dir: str, original_dir: str, modelA: str, 
+                 modelB: str, modelC: str, dimensions=(193,126)):
+        """
+        The constructor for HeatMapper, also runs self.load_model
+
+        Parameters
+        ----------
+        images_dir : str
+            path to directory containing patched images to generate heat maps of.
+        save_dir : str
+            path to directory to save heat maps too.
+        original_dir : str
+            path to directory containing original images, prioir to patching.
+        modelA : str
+            Path to pretrained CNN model A.
+        modelB : str
+            Path to pretrained CNN model B.
+        modelC : str
+            Path to pretrained CNN model C.
+        patch_size : TUPLE, optional
+            The size of the patches, Default is (224, 224).
+
+        Returns
+        -------
+        None.
+
+        """
         self.images_dir = images_dir
         self.save_dir = save_dir
-        self.patch_size = patch_size
         self.original_dir = original_dir
         self.image_size = (0,0)
         self.current_image = ""
         self.modelA = self.load_model(modelA)
         self.modelB = self.load_model(modelB)
         self.modelC = self.load_model(modelC)
-        self.average_mapA = None
-        self.count_mapA = None
-        self.average_mapB = None
-        self.count_mapB = None
-        self.average_mapC = None
-        self.count_mapC = None
+        self.prediction_mapA = None
+        self.prediction_mapB = None
+        self.prediction_mapC = None
+        self.dimensions = dimensions
+        self.rotate = False
     
-    def load_model(self, model_dir):
+    def load_model(self, model_dir: str) -> Sequential:
+        """
+        function to load CNN model into memory,
+        Heat Mapper expects the model to a Sequential CNN accepting 
+        images of size self.patch_size, and product an output
+        of size 1.
+
+        Parameters
+        ----------
+        model_dir : str
+            path to CNN model.
+
+        Returns
+        -------
+        Sequential
+            Keras sequential model for prediction.
+
+        """
         model = tf.keras.models.load_model(model_dir)
         model.trainable = False
         
         return model
-    
-    def new_image(self, image_name):
-        self.current_image = image_name
-        self.current_image_dir = os.path.join(self.images_dir, self.current_image)
-        imagePath = os.path.join(self.original_dir, self.current_image+".JPG")
-        print(imagePath)
-        if os.path.exists(imagePath):
-            im = PIL.Image.open(imagePath)
-        elif os.path.exists(os.path.join(self.original_dir, self.current_image+".Jpeg")):
-            im = PIL.Image.open(os.path.join(self.original_dir, image_name+".Jpeg"))
         
-        self.image_size = im.size
         
+         
     def create_matrices(self):
-        self.average_mapA = np.zeros(self.image_size)
-        self.count_mapA = np.zeros(self.image_size)
+        """
+        A function to initialize the matrices in size self.dimensions.
+
+        Returns
+        -------
+        None.
+
+        """
         
-        self.average_mapB = np.zeros(self.image_size)
-        self.count_mapB = np.zeros(self.image_size)
         
-        self.average_mapC = np.zeros(self.image_size)
-        self.count_mapC = np.zeros(self.image_size)
+        self.prediction_mapA = np.zeros(self.dimensions)
+        
+        self.prediction_mapB = np.zeros(self.dimensions)
+        
+        self.prediction_mapC = np.zeros(self.dimensions)
     
-    def update_matrices(self, coords, predictionsA, predictionsB, predictionsC):
+    def update_matrices(self, coords: list, predictionsA: np.ndarray, 
+                        predictionsB: np.ndarray, predictionsC: np.ndarray):
+        """
+        Function to update prediction_maps to contain the prediction values for each Neural Network.
+
+        Parameters
+        ----------
+        coords : list
+            List of coordinate tuples [(x1, y1), ...,(xn,yn)].
+            This list should directly coorelate with predictionsA, B, and C
+        predictionsA : np.ndarray
+            Matrix containing predictions for model A, shape (1,n,1)
+        predictionsB : np.ndarray
+            Matrix containing predictions for model B, shape (1,n,1)
+        predictionsC : TYPE
+            Matrix containing predictions for model C, shape (1,n,1)
+
+        Returns
+        -------
+        None.
+
+        """
         
         for coord, predA, predB, predC in zip(coords, predictionsA, predictionsB, predictionsC):
-        
-            self.average_mapA[coord[0]:coord[0]+self.patch_size[0]+1, coord[1]:coord[1]+self.patch_size[1]+1]+=predA
-            self.count_mapA[coord[0]:coord[0]+self.patch_size[0]+1, coord[1]:coord[1]+self.patch_size[1]+1]+=1
             
-            self.average_mapB[coord[0]:coord[0]+self.patch_size[0]+1, coord[1]:coord[1]+self.patch_size[1]+1]+=predB
-            self.count_mapB[coord[0]:coord[0]+self.patch_size[0]+1, coord[1]:coord[1]+self.patch_size[1]+1]+=1
+            x = int(coord[0]/30)
+            y = int(coord[1]/30)
             
-            self.average_mapC[coord[0]:coord[0]+self.patch_size[0]+1, coord[1]:coord[1]+self.patch_size[1]+1]+=predC
-            self.count_mapC[coord[0]:coord[0]+self.patch_size[0]+1, coord[1]:coord[1]+self.patch_size[1]+1]+=1
+            # print("X: {}, Y: {}".format(x, y))
+            # print("prediction: {}".format(predA))
+            
+            self.prediction_mapA[x][y] = predA[0]
+            
+            self.prediction_mapB[x][y] = predB[0]
+            
+            self.prediction_mapC[x][y] = predC[0]
         
     
-    def create_map(self, image_name):
-        self.new_image(image_name)
+    def create_map(self, image_name: str):
+        """
+        Function to create a prediction heat map for a given image
+
+        Parameters
+        ----------
+        image_name : str
+            Name of Image to create heat map of, equivelant to the name of the folder that contains the
+            image patches generated by map_patch
+
+        Returns
+        -------
+        None.
+
+        """
+        self.current_image = image_name
+        self.current_image_dir = os.path.join(self.images_dir, self.current_image)
         self.create_matrices()
         
-        mapIter = MapIterator(16, self.current_image_dir)
+        batch_size = 32
         
-        for idx in tqdm(range(len(mapIter))):
+        mapIter = MapIterator(batch_size, self.current_image_dir, return_name=False)
             
-            batch_x, file_names = mapIter.__getitem__(idx)
-            
-            
-            coords = [tuple(map(int, re.findall('\_[0-9]+_[0-9]+_[0-9]+\.', file)[0].split("_")[1:3])) for file in file_names]
-            
-            predictionsA = self.modelA.predict_on_batch(batch_x)
-            predictionsB = self.modelB.predict_on_batch(batch_x)
-            predictionsC = self.modelC.predict_on_batch(batch_x)
-            
-            self.update_matrices(coords, predictionsA, predictionsB, predictionsC)
+        coords = [tuple(map(int, re.findall('\_[0-9]+_[0-9]+_[0-9]+\.', file)[0].split("_")[1:3])) for file in mapIter.files]
+        
+        # coords = sorted(coords , key=lambda k: [k[1], k[0]])
+        
+        predictionsA = self.modelA.predict(mapIter, steps=len(mapIter), batch_size=batch_size, verbose=1)
+        predictionsB = self.modelB.predict(mapIter, steps=len(mapIter), batch_size=batch_size, verbose=1)
+        predictionsC = self.modelC.predict(mapIter, steps=len(mapIter), batch_size=batch_size, verbose=1)
+        
+        self.update_matrices(coords, predictionsA, predictionsB, predictionsC)
         
         self.save_matrices()
         
     
     def save_matrices(self):
+        """
+        Internal function to save heat maps to save folder, last method called in the pipeline
+
+        Returns
+        -------
+        None.
+
+        """
         
         save_folder = os.path.join(self.save_dir, self.current_image)
         
@@ -111,23 +194,19 @@ class HeatMaper:
             os.mkdir(save_folder)
             
         #if part of image wasnt touches do to rounding, add 1 to base
-        self.count_mapA[self.count_mapA == 0] += 1
-        self.count_mapB[self.count_mapB == 0] += 1
-        self.count_mapC[self.count_mapC == 0] += 1
         
-        
-        save_matrixA = np.divide(self.average_mapA, self.count_mapA)
-        save_matrixB = np.divide(self.average_mapB, self.count_mapB)
-        save_matrixC = np.divide(self.average_mapC, self.count_mapC)
-        
-        save_matrixA = save_matrixA*255
-        save_matrixB = save_matrixB*255
-        save_matrixC = save_matrixC*255
-        
+        save_matrixA = self.prediction_mapA*255
+        save_matrixB = self.prediction_mapB*255
+        save_matrixC = self.prediction_mapC*255
         
         imgA = Image.fromarray(save_matrixA)
         imgB = Image.fromarray(save_matrixB)
         imgC = Image.fromarray(save_matrixC)
+        
+        if self.rotate:
+            imgA = imgA.rotate(90, resample=PIL.Image.BICUBIC)
+            imgB = imgB.rotate(90, resample=PIL.Image.BICUBIC)
+            imgC = imgC.rotate(90, resample=PIL.Image.BICUBIC)
         
         imgA = imgA.convert("L")
         imgB = imgB.convert("L")
@@ -142,11 +221,12 @@ class HeatMaper:
 
 if __name__=="__main__":
     patch_size = (224, 224)
-    base_dir = "E:\\Coding\\Dataset"
-    original_dir = "images_test"
-    map_folder = "Test_Map"
-    map_save_folder = "Test_Map_Heat"
+    base_dir = "E:\\Coding\\Dataset\\new_heat_mapper"
+    map_folder = "images"
+    map_save_folder = "images_heat"
+    original_dir = "E:\\Coding\\Dataset\\new_heat_mapper\\images_original"
     model_dir = "E:\\Coding\\MDMGAGAICSCS\\ML"
+    
     
     images_dir = os.path.join(base_dir, map_folder)
     save_dir = os.path.join(base_dir, map_save_folder)
@@ -159,7 +239,7 @@ if __name__=="__main__":
     networkB_p = os.path.join(model_dir, networkB)
     networkC_p = os.path.join(model_dir, networkC)
     
-    mapper = HeatMaper(images_dir, save_dir, os.path.join(base_dir, original_dir), networkA_p, networkB_p, networkC_p)
+    mapper = HeatMaper(images_dir, save_dir, original_dir, networkA_p, networkB_p, networkC_p)
     
     
     
@@ -170,29 +250,6 @@ if __name__=="__main__":
         
         mapper.create_map(folder)
         
-    
-    # new_arrA = np.load("savea.npy")
-    # new_arrA = new_arrA*255
-    
-    # new_arrB = np.load("saveb.npy")
-    # new_arrB = new_arrB*255
-    
-    # new_arrC = np.load("savec.npy")
-    # new_arrC = new_arrB*255
-    
-    
-    # imgA = Image.fromarray(new_arrA)
-    # imgB = Image.fromarray(new_arrB)
-    # imgC = Image.fromarray(new_arrC)
-    
-    # imgA = imgA.convert("L")
-    # imgB = imgB.convert("L")
-    # imgC = imgC.convert("L")
-    
-    # imgA.save(os.path.join("E:\\Coding\\Dataset\\Train_Map_Classifications\\DSC00027", "modelA.png"))
-    # imgB.save(os.path.join("E:\\Coding\\Dataset\\Train_Map_Classifications\\DSC00027", "modelB.png"))
-    # imgC.save(os.path.join("E:\\Coding\\Dataset\\Train_Map_Classifications\\DSC00027", "modelC.png"))
-    
     
     
     

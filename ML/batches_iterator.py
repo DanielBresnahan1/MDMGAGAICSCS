@@ -6,6 +6,13 @@ Updated for python 3, specifically the implimentation of the __next__ method.
 Original File Structure was different from this projects implementation, so the _init__ 
 method needed to be changed. Specifically, there are no subfolders in the 'Positive' 
 and 'Negative' directories
+
+__next__ -> __getitem__
+    * Moved shuffeling to occur at the end of every epoch
+    
+__init__ 
+    * removed sub_dirs in structure, so just loop through files
+    
 """
 
 

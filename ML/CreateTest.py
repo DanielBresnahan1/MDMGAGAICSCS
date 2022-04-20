@@ -3,6 +3,15 @@
 Created on Wed Mar 30 15:26:30 2022
 
 @author: Danie
+
+DEPRICATED FILE: DO NOT RUN
+This file was responsible for generating the grid patched images of the test directory. This was used 
+when the final classification method involved sampling a set of representative points from
+a grid classification of the test images by networks A, B, C
+
+CreateTest will take in a directory of images, and the path for the label_csv 
+And it will perform a grid patch on each image; A grid patch is when an image is split into even chunks of 
+224X224. After grid patching, it will generate a csv file containg the image name and its class label
 """
 import os
 import shutil
@@ -12,7 +21,26 @@ import PIL
 from tqdm import tqdm
 import csv
 
-def patch_test(base_dir, test_dir, label_csv, annotations_csv):
+def patch_test(base_dir: str, test_dir: str, label_csv: str, annotations_csv: str):
+    """
+    
+
+    Parameters
+    ----------
+    base_dir : str
+        Path to base directory that contains the csv and the images.
+    test_dir : str
+        Path to dir that contains test images.
+    label_csv : str
+        Name of csv to save class labels too.
+    annotations_csv : str
+        Name of csv which contains images and lesion coords.
+
+    Returns
+    -------
+    None.
+
+    """
     
     vert_patcher = ImagePatcher(None, (224, 224), imageSize=(6000, 4000), majorAxisDif=0, rotBoosting=False)
     hor_patcher = ImagePatcher(None, (224, 224), imageSize=(4000, 6000), majorAxisDif=0, rotBoosting=False)
