@@ -449,11 +449,11 @@ def mvm_results():
                 machine_fn += 1
     user_accuracy = user_correct / len(true_labels)
     machine_accuracy = machine_correct / len(true_labels)
-    win_quote = "You are even!"
+    win_quote = "You Tie!"
     if machine_accuracy < user_accuracy:
-        win_quote = "You win!"
+        win_quote = "You Win!"
     elif user_accuracy < machine_accuracy:
-        win_quote = "You lose!"
+        win_quote = "You :ose!"
 
     return render_template('mvm_results.html',
                            user_healthy_pics=[picture_label[0] for picture_label in session['mvm_choices']
