@@ -40,7 +40,7 @@ def residual_block(x: Tensor, downsample: bool, filters: int, kernel_size: int =
     out = relu_bn(out)
     return out
 
-def create_res_net():
+def create_res_net() -> Model:
     
     inputs = Input(shape=(1, 193, 126))
     num_filters = 64

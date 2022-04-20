@@ -19,6 +19,9 @@ def map_split(directory, annotations_csv, save_dir, save_csv):
     
     weird_patcher = ImagePatcher("", (224, 224), stride=30, imageSize=(5184, 3456), majorAxisDif=0, rotBoosting=False)
     
+    #it took actually forever to figure out that there are only 2 images with this dimension :()
+    singular_weird_patcher = ImagePatcher("", (224, 224), stride=30, imageSize=(3456, 5184), majorAxisDif=0, rotBoosting=False)
+    
     new_csv = []
     
     for index, image in enumerate(unique_images.keys()):
@@ -46,9 +49,12 @@ def map_split(directory, annotations_csv, save_dir, save_csv):
         elif im.size == (4000, 6000):
             hor_patcher.set_save_dir(new_dir)
             hor_patcher.patch(cur_image, (0, 0, 0, 0), sub_folder=False, Map=True)
-        else:
+        elif im.size == (5184, 3456):
             weird_patcher.set_save_dir(new_dir)
             weird_patcher.patch(cur_image, (0, 0, 0, 0), sub_folder=False, Map=True)
+        else:
+            singular_weird_patcher.set_save_dir(new_dir)
+            singular_weird_patcher.patch(cur_image, (0, 0, 0, 0), sub_folder=False, Map=True)
         
         
         

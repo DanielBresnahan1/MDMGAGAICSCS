@@ -3,6 +3,11 @@
 Created on Sat Feb 26 13:26:01 2022
 
 @author: Daniel
+
+This script defines the method patch_all, and runs it given current running context
+The purpose is to utilize ImagePatcher to patch all images (both positive and negative) in a given dir. 
+
+Should be ran after createSplits. 
 """
 
 from imagepatching import ImagePatcher
@@ -41,6 +46,7 @@ def patch_all(base_dir: str, annotations_csv: str, pic_folder: str, save_folder:
     
     vert_patcher = ImagePatcher(save_dir, (224, 224), imageSize=(6000, 4000), rotBoosting=True)
     hor_patcher = ImagePatcher(save_dir, (224, 224), imageSize=(4000, 6000), rotBoosting=True)
+    #Some of the iamges have a super weird resolution of 5184 X 3456??
     weird_patcher = ImagePatcher(save_dir, (224, 224), imageSize=(5184, 3456), rotBoosting=True)
     
     with open(annotations, "r") as f:
