@@ -302,11 +302,45 @@ import tensorflow as tf
 from tensorflow.keras.callbacks import ModelCheckpoint
 
 def relu_bn(inputs: Tensor) -> Tensor:
+    """
+    Relu and Batch Normalization Block for ResNet. 
+
+    Parameters
+    ----------
+    inputs : Tensor
+        Layer state.
+
+    Returns
+    -------
+    Tensor
+        Layer after batch normalization and ReLu.
+
+    """
     relu = ReLU()(inputs)
     bn = BatchNormalization()(relu)
     return bn
 
 def residual_block(x: Tensor, downsample: bool, filters: int, kernel_size: int = 3) -> Tensor:
+    """
+    
+
+    Parameters
+    ----------
+    x : Tensor
+        DESCRIPTION.
+    downsample : bool
+        DESCRIPTION.
+    filters : int
+        DESCRIPTION.
+    kernel_size : int, optional
+        DESCRIPTION. The default is 3.
+
+    Returns
+    -------
+    Tensor
+        DESCRIPTION.
+
+    """
     y = Conv2D(kernel_size=kernel_size,
                strides= (1 if not downsample else 2),
                filters=filters,
@@ -327,6 +361,17 @@ def residual_block(x: Tensor, downsample: bool, filters: int, kernel_size: int =
     return out
 
 def create_res_net() -> Model:
+    """
+    Creates the Resnet Model. To see Architecture
+    Here is a good page for understanding the layer architecture:
+    https://iq.opengenus.org/resnet50-architecture/#:~:text=ResNet50%20is%20a%20variant%20of,explored%20ResNet50%20architecture%20in%20depth.
+
+    Returns
+    -------
+    Model
+        keras Non-Sequential Model.
+
+    """
     
     inputs = Input(shape=(1, 193, 126))
     num_filters = 64
