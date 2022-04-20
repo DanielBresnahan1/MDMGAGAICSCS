@@ -3,6 +3,9 @@
 Created on Tue Apr  5 20:32:20 2022
 
 @author: Danie
+
+File that utilizes imagePatcher to geenrate patches for heat_map_generation. This works slightly differnt
+than stage 1 patching, because all iamges should be patched using a stride, regardless of label.
 """
 import os
 from createSplits import find_unique
@@ -10,7 +13,28 @@ from imagepatching import ImagePatcher
 import PIL
 import csv
 
-def map_split(directory, annotations_csv, save_dir, save_csv):
+def map_split(directory: str, annotations_csv: str, save_dir: str, save_csv: str):
+    """
+    Iterators over every image in the directory associated with annotations_csv and generates patches 
+    by striding some stride length, set to 30 as per paper specifications.
+    In total for an image of size 6000x4000 this will generate 25,634 patches. 
+
+    Parameters
+    ----------
+    directory : str
+        directory path that points to base directory containing every folder and file.
+    annotations_csv : str
+        Name of annotations_csv, containing images and lession coordiantes.
+    save_dir : str
+        Name of directory to save folders containing patches to.
+    save_csv : str
+        Name of new csv to create that will contain the images and their associated class labels.
+
+    Returns
+    -------
+    None.
+
+    """
     unique_images = find_unique(annotations_csv)
     
     vert_patcher = ImagePatcher("", (224, 224), stride=30, imageSize=(6000, 4000), majorAxisDif=0, rotBoosting=False)

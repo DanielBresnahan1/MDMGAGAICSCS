@@ -3,6 +3,11 @@
 Created on Thu Mar 31 12:44:45 2022
 
 @author: Danie
+
+DEPRICATED FILE DO NOT USE
+
+Old biolerplate work for when stage 3 classification was just going to be selecting a set of representative
+points create by ModelsA B and C. Has terrible accuracy and should absolutley not be used. 
 """
 
 import tensorflow as tf

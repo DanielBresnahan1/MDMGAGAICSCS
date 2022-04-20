@@ -16,7 +16,7 @@ class ImagePatcher:
     def __init__(self, saveDir: str, patchSize: tuple, majorAxisDif=10,
                  stride=10, imageSize=(6000, 4000), rotBoosting=True):
         """
-        
+        Constructor for ImagePatcher
 
         Parameters
         ----------
@@ -35,6 +35,8 @@ class ImagePatcher:
             of patches from a single image. The default is True.
         stride : int, optional
             how far to stride along the major axis of the legion. The default is 10.
+        imageSize: tuple, optional
+            The size of the image to patch. DEFAULT = (6000,4000)
 
         Returns
         -------
@@ -50,7 +52,7 @@ class ImagePatcher:
         
     def set_save_dir(self, savedir):
         """
-        Setter to change save Directory, primarly used for test image patching, as all images need to be split cubicly
+        Setter to change save Directory
 
         Parameters
         ----------
@@ -73,13 +75,13 @@ class ImagePatcher:
         Parameters
         ----------
         x1 : int
-            Lesion x1
+            Lession x1
         y1 : int
-            Lesion y1
+            Lession y1
         x2 : int
-            Lesion x2
+            Lession x2
         y2 : int
-            Lesion y2
+            Lession y2
 
         Returns
         -------
@@ -164,6 +166,8 @@ class ImagePatcher:
             (x1, y1, x2, y2)
         sub_folder : Boolean [true]
             If the iamges should be saved inside a subfolder, or just the parent dir
+        Map : Boolean [False]
+            If this patching is for heat map generation, usefull because saving works differently 
 
         Returns
         -------
