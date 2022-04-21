@@ -12,7 +12,6 @@ from selenium.common.exceptions import NoSuchElementException
 
 
 def testRandomForestHealthy(url = "http://127.0.0.1:5000/"):
-
     """! Tests Random Forest functionality.
         This test will boot a selenium driver, access the application at the specified url, and run through the random forest code selecting only healthy.
         It will then double check that there are ten healthy images, zero unhealthy images, and that the confidence of the model is 100%.
