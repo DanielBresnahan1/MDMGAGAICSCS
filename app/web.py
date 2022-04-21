@@ -92,12 +92,9 @@ def getImage(image):
                 label = row[4]
                 trueLabel = row[5]
     
-                responseA = requests.get(url + mapA)
-                responseB = requests.get(url + mapB)
-                responseC = requests.get(url + mapC)
-                imgA = Image.open(BytesIO(responseA.content))
-                imgB = Image.open(BytesIO(responseB.content))
-                imgC = Image.open(BytesIO(responseC.content))
+                imgA = url + mapA
+                imgB = url + mapB
+                imgC = url + mapC
                 break
     
     return [x,y,z,imgA,imgB,imgC,label, trueLabel]
@@ -479,8 +476,8 @@ def mvm_results():
         if image_specs[6] == 1:
             label = 'B'
         true_labels.append((image, label))
-        stuff.append((image, image_specs[0], image_specs[1], image_specs[2],
-                      image_specs[3], image_specs[4], image_specs[5]))
+        stuff.append([image, image_specs[0], image_specs[1], image_specs[2],
+                      image_specs[3], image_specs[4], image_specs[5]])
 
     print(f"mvm choices {session['mvm_choices']}")
     print(f"mac choices {machine_choices}")
