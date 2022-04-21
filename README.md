@@ -48,6 +48,14 @@ With the class instantiated, call the class method patch (patcher.patch) and sup
 
 It is possible to use colate data if you wish to rerun the experiment entirely, however, do note it is a hard coded script, so you will have to change each path name to represent the associated path on your system. 
 
+#Release Notes Milestone M4
+
+--Updated graph functionality-- Graph now shows the correct heat map images when a point is hovered. It will show the x, y and z coordinates of the point hovered as well as a heat map corresponding to each point below the graph based on what images were shown to the user over the course of the Man vs machine trials
+
+--ML: Created and trained Model T for stage 3 classification. Model T uses a ResNet 50 like Structure with 25 million parameters. The classified heat maps are then fed into 
+stage 4 for final classification. Stage 4 classification is handled by the Linear Classifier Model and uses a random forest classifier to determine what the 3 coordinates final class labeel is.
+Additionally, testing was done using the test folder and results were saved in a csv file, which was uploaded to the s3 bucket. 
+
 --Man Versus Machine M4--
 Functionality added to demonstrate the capabilities of a trained AI against a regular human to classify disease in corn plants. 
 User can now play against the AI by selecting 'Healthy' or 'Unhealthy' 10 times and then view the resulting scores and true images labels at the end. 
