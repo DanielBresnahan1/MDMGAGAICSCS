@@ -5,9 +5,50 @@
 		<!--Plotly graph code starts here-->
 		<div id='graphDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
 		<div id='image'><!-- This is where the image displays --></div>
+        <div id='image2'><!-- This is where the image displays --></div>
+        <div id='image3'><!-- This is where the image displays --></div>
 		<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
 		<script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js'></script>
 		<script src='/static/javascript/3dHover.js'></script>
+        <script type="text/javascript">
+            function createPlot(stuff){
+                x = []
+                y = []
+                z = []
+                imgs = []
+              for (i = 0; i < stuff.length; i++)
+              {
+                x.push(stuff[i][1])
+                y.push(stuff[i][2])
+                z.push(stuff[i][3])
+                imgs.push(stuff[i][4])
+                imgs.push(stuff[i][5])
+                imgs.push(stuff[i][6])
+              } 
+              var data = [{
+                x: x,
+                y: y,
+                z: z,
+                mode: 'markers',
+                type: 'scatter3d',
+                marker: {
+                    color: 'rgb(23, 190, 207)',
+                    size: 2
+                }
+                }];
+
+                Plotly.newPlot('graphDiv', data, {
+                hovermode: 'closest'
+                });
+
+                document.getElementById('graphDiv').on('plotly_hover', function(data) {
+                document.getElementById('image').innerHTML="<img src='" + imgs[data.points[0].pointNumber] + "' />";
+                document.getElementById('image2').innerHTML="<img src='" + imgs[data.points[0].pointNumber + 1] + "' />";
+                document.getElementById('image3').innerHTML="<img src='" + imgs[data.points[0].pointNumber + 2] + "' />";
+                });
+            }
+            createPlot({{ stuff | safe}})
+        </script>
 		<!--Plotly graph code ends here-->
         <div style="overflow:auto;">
             <h1 class="display-3" style="float:left;">{{ win_quote }}</h1>
@@ -29,7 +70,7 @@
                             {% set border_type = 'danger' %}
                         {% endif %}
                         <div class="card border-{{border_type}}" style="width:18rem;margin:0.5rem;border-top-width: 3px;padding-bottom: 0px;border-right-width: 3px;border-left-width: 3px;border-bottom-width: 3px;">
-                            <img class="card-img-top" src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{i}}" alt="corn pic {{i}}">
+                            <img class="card-img-top" src="https://mdmgcapstone.s3.amazonaws.com/{{i}}" alt="corn pic {{i}}">
                         </div>
                     {% endfor %}
                 </div>
@@ -42,7 +83,7 @@
                             {% set border_type = 'danger' %}
                         {% endif %}
                         <div class="card border-{{border_type}}" style="width:18rem;margin:0.5rem;border-top-width: 3px;padding-bottom: 0px;border-right-width: 3px;border-left-width: 3px;border-bottom-width: 3px;">
-                            <img class="card-img-top" src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{i}}" alt="corn pic {{i}}">
+                            <img class="card-img-top" src="https://mdmgcapstone.s3.amazonaws.com/{{i}}" alt="corn pic {{i}}">
                         </div>
                     {% endfor %}
                 </div>
@@ -57,7 +98,7 @@
                             {% set border_type = 'danger' %}
                         {% endif %}
                         <div class="card border-{{border_type}}" style="width:18rem;margin:0.5rem;border-top-width: 3px;padding-bottom: 0px;border-right-width: 3px;border-left-width: 3px;border-bottom-width: 3px;">
-                            <img class="card-img-top" src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{i}}" alt="corn pic {{i}}">
+                            <img class="card-img-top" src="https://mdmgcapstone.s3.amazonaws.com/{{i}}" alt="corn pic {{i}}">
                         </div>
                     {% endfor %}
                 </div>
@@ -70,7 +111,7 @@
                             {% set border_type = 'danger' %}
                         {% endif %}
                         <div class="card border-{{border_type}}" style="width:18rem;margin:0.5rem;border-top-width: 3px;padding-bottom: 0px;border-right-width: 3px;border-left-width: 3px;border-bottom-width: 3px;">
-                            <img class="card-img-top" src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{i}}" alt="corn pic {{i}}">
+                            <img class="card-img-top" src="https://mdmgcapstone.s3.amazonaws.com/{{i}}" alt="corn pic {{i}}">
                         </div>
                     {% endfor %}
                 </div>
