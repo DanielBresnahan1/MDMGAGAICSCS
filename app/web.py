@@ -78,6 +78,7 @@ def getImage(image):
     mapC = 0
     label = 0
     trueLabel = 0
+    print(f"image {image}")
     with open('./app/heatmapAccessData.csv', newline='') as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
         for row in reader:
@@ -199,6 +200,7 @@ def getNextSetOfImages(form, sampling_method):
         renders the label.html webpage.
     """
     data = getData()
+    # data.to_csv("csv.txt") <-- dataframe to csv
     ml_model, train_img_names = createMLModel(data)
     test_set = data[data.index.isin(train_img_names) == False]
 
@@ -441,10 +443,12 @@ def man_vs_machine():
         session['mvm_choices'] = session['mvm_choices'] + [(form.corn_picture.data, user_select)]
         return renderMVMLabel(form)
     else:  # a GET request, clicking the button to play MVM from the home page, starting a new game.
-        # TODO: REPLACE WITH ACTUAL CODE WHEN PRO MODEL REALIZED
         session['mvm_choices'] = []
-        session['mvm_pics'] = ['DSC00027.JPG', 'DSC00076.JPG', 'DSC00029.JPG', 'DSC00030.JPG', 'DSC00031.JPG',
-                               'DSC00033.JPG', 'DSC00025.JPG', 'DSC00037.JPG', 'DSC00038.JPG', 'DSC00036.JPG']
+        data = pd.read_csv("classifications.csv")
+        # print(data.iloc[:, 0])
+        session['mvm_pics'] = random.sample(data.iloc[:, 0].values.tolist(), 10)
+        # print(session['mvm_pics'])
+        session['jank'] = session['mvm_pics']
         return renderMVMLabel(form)
 
 
@@ -459,24 +463,28 @@ def mvm_results():
     render_template : flask function
         renders a mvm_results.html page displaying results of user against pro model in man versus machine game.
     """
-    # TODO: REPLACE WITH ACTUAL CODE WHEN PRO MODEL REALIZED
-    # jank distribution of corn pictures between healthy & unhealthy, represents how machine classification. random
-    # jank determination of true labels for corn pictures. also random
     machine_choices = []
     true_labels = []
-    for picture_label in session['mvm_choices']:
-        if random.randint(0, 1) == 1:  # machine selects picture as healthy
-            machine_choices.append((picture_label[0], 'H'))
-        else:  # machine selects picture as unhealthy
-            machine_choices.append((picture_label[0], 'B'))
-        if random.randint(0, 1) == 1:  # picture is given healthy true label
-            true_labels.append((picture_label[0], 'H'))
-        else:  # picture is given unhealthy true label
-            true_labels.append((picture_label[0], 'B'))
+    stuff = []
+    # TODO: reverse order?
+    for image in session['jank']:
+        image_specs = getImage(image)  # 0 healthy, 1 unhealthy
+        # get AI's predicted labels
+        label = 'H'
+        if image_specs[5] == 1:
+            label = 'B'
+        machine_choices.append((image, label))
+        # get true labels
+        label = 'H'
+        if image_specs[6] == 1:
+            label = 'B'
+        true_labels.append((image, label))
+        stuff.append((image, image_specs[0], image_specs[1], image_specs[2],
+                      image_specs[3], image_specs[4], image_specs[5]))
 
     print(f"mvm choices {session['mvm_choices']}")
     print(f"mac choices {machine_choices}")
-    print(f"true labels {true_labels}")  # actually random
+    print(f"true labels {true_labels}")
 
     user_correct = 0
     user_tp = 0
@@ -536,7 +544,8 @@ def mvm_results():
                            machine_accuracy=machine_accuracy,
                            user_tp=user_tp, user_tn=user_tn, user_fp=user_fp, user_fn=user_fn,
                            machine_tp=machine_tp, machine_tn=machine_tn, machine_fp=machine_fp, machine_fn=machine_fn,
-                           win_quote=win_quote, )
+                           win_quote=win_quote,
+                           stuff=stuff, )
     # the above could be cleaned up, however...
 
 
