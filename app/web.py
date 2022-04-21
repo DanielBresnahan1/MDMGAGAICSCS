@@ -92,12 +92,9 @@ def getImage(image):
                 label = row[4]
                 trueLabel = row[5]
     
-                responseA = requests.get(url + mapA)
-                responseB = requests.get(url + mapB)
-                responseC = requests.get(url + mapC)
-                imgA = Image.open(BytesIO(responseA.content))
-                imgB = Image.open(BytesIO(responseB.content))
-                imgC = Image.open(BytesIO(responseC.content))
+                imgA = url + mapA
+                imgB = url + mapB
+                imgC = url + mapC
                 break
 
     print(f"{image}: predict{label}, true{trueLabel}")

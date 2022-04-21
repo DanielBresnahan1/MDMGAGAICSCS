@@ -38,3 +38,5 @@ Werkzeug==2.0.3
 wrapt==1.12.1
 WTForms==2.3.3
 yarl==1.6.3
+Pillow==9.1.0
+requests
