@@ -445,7 +445,7 @@ def man_vs_machine():
         session['mvm_pics'] = []
         data = pd.read_csv("classifications.csv")
         session['jank'] = random.sample(data.iloc[:, 0].values.tolist(), 10)
-        print(session['jank'])
+        print(f"session[jank] {session['jank']}")
         for image in session['jank']:
             if image[0:3] == "DSC":
                 session['mvm_pics'].append(image + ".JPG")
@@ -469,7 +469,7 @@ def mvm_results():
     machine_choices = []
     true_labels = []
     stuff = []
-    # TODO: reverse order?
+    session['jank'].reverse()
     for image in session['jank']:
         image_specs = getImage(image)  # 0 healthy, 1 unhealthy
         if image[0:3] == "DSC":
@@ -533,6 +533,13 @@ def mvm_results():
         win_quote = "You Win!"
     elif user_accuracy < machine_accuracy:
         win_quote = "You Lose!"
+
+    print(f"user_healthy_pics {[picture_label[0] for picture_label in session['mvm_choices'] if picture_label[1] == 'H']}")
+    print(f"user_unhealthy_pics {[picture_label[0] for picture_label in session['mvm_choices'] if picture_label[1] == 'B']}")
+    print(f"AI_healthy_pics {[picture_label[0] for picture_label in machine_choices if picture_label[1] == 'H']}")
+    print(f"AI_unhealthy_pics {[picture_label[0] for picture_label in machine_choices if picture_label[1] == 'B']}")
+    print(f"true_healthy_pics {[picture_label[0] for picture_label in true_labels if picture_label[1] == 'H']}")
+    print(f"true_unhealthy_pics {[picture_label[0] for picture_label in true_labels if picture_label[1] == 'B']}")
 
     return render_template('mvm_results.html',
                            user_healthy_pics=[picture_label[0] for picture_label in session['mvm_choices']
