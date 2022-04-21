@@ -99,7 +99,8 @@ def getImage(image):
                 imgB = Image.open(BytesIO(responseB.content))
                 imgC = Image.open(BytesIO(responseC.content))
                 break
-    
+
+    print(f"{image}: predict{label}, true{trueLabel}")
     return [x,y,z,imgA,imgB,imgC,label, trueLabel]
 
 
@@ -444,11 +445,16 @@ def man_vs_machine():
         return renderMVMLabel(form)
     else:  # a GET request, clicking the button to play MVM from the home page, starting a new game.
         session['mvm_choices'] = []
+        session['mvm_pics'] = []
         data = pd.read_csv("classifications.csv")
-        # print(data.iloc[:, 0])
-        session['mvm_pics'] = random.sample(data.iloc[:, 0].values.tolist(), 10)
-        # print(session['mvm_pics'])
-        session['jank'] = session['mvm_pics']
+        session['jank'] = random.sample(data.iloc[:, 0].values.tolist(), 10)
+        print(session['jank'])
+        for image in session['jank']:
+            if image[0:3] == "DSC":
+                session['mvm_pics'].append(image + ".JPG")
+            else:
+                session['mvm_pics'].append(image + ".Jpeg")
+        print(session['mvm_pics'])
         return renderMVMLabel(form)
 
 
@@ -469,18 +475,22 @@ def mvm_results():
     # TODO: reverse order?
     for image in session['jank']:
         image_specs = getImage(image)  # 0 healthy, 1 unhealthy
+        if image[0:3] == "DSC":
+            image = image + ".JPG"
+        else:
+            image = image + ".Jpeg"
         # get AI's predicted labels
         label = 'H'
-        if image_specs[5] == 1:
+        if image_specs[6] == '1':
             label = 'B'
         machine_choices.append((image, label))
         # get true labels
         label = 'H'
-        if image_specs[6] == 1:
+        if image_specs[7] == '1':
             label = 'B'
         true_labels.append((image, label))
-        stuff.append((image, image_specs[0], image_specs[1], image_specs[2],
-                      image_specs[3], image_specs[4], image_specs[5]))
+        stuff.append([image, image_specs[0], image_specs[1], image_specs[2],
+                      image_specs[3], image_specs[4], image_specs[5]])
 
     print(f"mvm choices {session['mvm_choices']}")
     print(f"mac choices {machine_choices}")
@@ -525,7 +535,7 @@ def mvm_results():
     if machine_accuracy < user_accuracy:
         win_quote = "You Win!"
     elif user_accuracy < machine_accuracy:
-        win_quote = "You :ose!"
+        win_quote = "You Lose!"
 
     return render_template('mvm_results.html',
                            user_healthy_pics=[picture_label[0] for picture_label in session['mvm_choices']
