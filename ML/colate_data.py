@@ -49,7 +49,7 @@ def patch_all(base_dir: str, annotations_csv: str, pic_folder: str, save_folder:
     #Some of the iamges have a super weird resolution of 5184 X 3456??
     weird_patcher = ImagePatcher(save_dir, (224, 224), imageSize=(5184, 3456), rotBoosting=True)
     #For the few weird photos who have the flipped weird dimension
-    rot_weird_patcher = ImagePatcher(save_dir, (224, 224), imageSize=(3456,5184, rotBoosting=True))
+    rot_weird_patcher = ImagePatcher(save_dir, (224, 224), imageSize=(3456,5184), rotBoosting=True)
     
     with open(annotations, "r") as f:
         reader = csv.reader(f)
@@ -75,8 +75,8 @@ def patch_all(base_dir: str, annotations_csv: str, pic_folder: str, save_folder:
 
 if __name__=="__main__":
     base_dir = "E:\Coding\Dataset"
-    annotations_csv="annotations_handheld.csv"
-    pic_folder="images_handheld"
-    save_folder="Train"
+    annotations_csv="annotations_val.csv"
+    pic_folder="images_validation"
+    save_folder="Validation"
     patch_all(base_dir, annotations_csv, pic_folder, save_folder)
         

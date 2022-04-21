@@ -452,16 +452,16 @@ def mvm_results():
     machine_accuracy = machine_correct / len(true_labels)
 
     return render_template('mvm_results.html',
-                           user_healthy_pics=[picture_label[0] for picture_label in session['mvm_choices']
+                            user_healthy_pics=[picture_label[0] for picture_label in session['mvm_choices']
                                               if picture_label[1] == 'H'],
-                           user_unhealthy_pics=[picture_label[0] for picture_label in session['mvm_choices']
+                            user_unhealthy_pics=[picture_label[0] for picture_label in session['mvm_choices']
                                                 if picture_label[1] == 'B'],
-                           machine_healthy_pics=[picture_label[0] for picture_label in machine_choices
-                                                 if picture_label[1] == 'H'],
-                           machine_unhealthy_pics=[picture_label[0] for picture_label in machine_choices
-                                                   if picture_label[1] == 'B'],
-                           user_accuracy=user_accuracy,
-                           machine_accuracy=machine_accuracy, )
+                            machine_healthy_pics=[picture_label[0] for picture_label in machine_choices
+                                                  if picture_label[1] == 'H'],
+                            machine_unhealthy_pics=[picture_label[0] for picture_label in machine_choices
+                                                    if picture_label[1] == 'B'],
+                            user_accuracy=user_accuracy,
+                            machine_accuracy=machine_accuracy, )
     health_pic_user, blight_pic_user, health_pic, blight_pic, health_pic_prob, blight_pic_prob = ml_model.infoForResults(train_img_names, test_set)
     return render_template('retrain.html', confidence = "{:.2%}".format(round(session['confidence'],4)), health_user = health_pic_user, blight_user = blight_pic_user, healthNum_user = len(health_pic_user), blightNum_user = len(blight_pic_user), health_test = health_pic, unhealth_test = blight_pic, healthyNum = len(health_pic), unhealthyNum = len(blight_pic), healthyPct = "{:.2%}".format(len(health_pic)/(200-(len(health_pic_user)+len(blight_pic_user)))), unhealthyPct = "{:.2%}".format(len(blight_pic)/(200-(len(health_pic_user)+len(blight_pic_user)))), h_prob = health_pic_prob, b_prob = blight_pic_prob)
 
@@ -473,3 +473,5 @@ def restart():
 
 #app.run( host='127.0.0.1', port=5000, debug='True', use_reloader = False)
 
+if __name__=="__main__":
+    getData()
