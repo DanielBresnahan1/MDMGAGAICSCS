@@ -1,13 +1,13 @@
 {% extends "base.html" %}
-{% block title %}label title{% endblock %}
+{% block title %}mvm_label title{% endblock %}
 {% block page_header %}
     <div class="jumbotron" style="background-color:#ffffff">
-        <h1 class="display-3">AI Training</h1>
-        <p class="lead">Help the AI learn which plants are healthy and unhealthy.</p>
+        <h1 class="display-3">Man vs Machine</h1>
+        <p class="lead">Can you guess better than our AI?</p>
         <!-- TODO: should the image and form be horizontal together or use a vertical alignment instead? -->
         <div style="display:flex;justify-content:center;">
             <div style="width:50%;">
-                <img src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{ picture }}" style="width:90%;">
+                <img src="https://mdmgcapstone.s3.amazonaws.com/{{ picture }}" style="width:500px;height:400px;">
             </div>
             <div style="width:50%;">
                 <form action="" method="post">

@@ -3,6 +3,6 @@ from wtforms import RadioField, SubmitField, HiddenField
 from wtforms.validators import DataRequired
 
 class LabelForm(FlaskForm):
-    choice = RadioField(u'Label', choices=[('H', u'Healthy'), ('B', u'Unhealthy')], validators = [DataRequired(message='Cannot be empty')])
-    submit = SubmitField('Add Label')
-    corn_picture = HiddenField('default hidden field?')
+    h_choice = SubmitField(label='Healthy')
+    b_choice = SubmitField(label='Unhealthy')
+    corn_picture = HiddenField('default hidden field? idk how work')

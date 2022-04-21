@@ -78,6 +78,7 @@ def getImage(image):
     mapC = 0
     label = 0
     trueLabel = 0
+    print(f"image {image}")
     with open('./app/heatmapAccessData.csv', newline='') as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
         for row in reader:
@@ -91,14 +92,12 @@ def getImage(image):
                 label = row[4]
                 trueLabel = row[5]
     
-                responseA = requests.get(url + mapA)
-                responseB = requests.get(url + mapB)
-                responseC = requests.get(url + mapC)
-                imgA = Image.open(BytesIO(responseA.content))
-                imgB = Image.open(BytesIO(responseB.content))
-                imgC = Image.open(BytesIO(responseC.content))
+                imgA = url + mapA
+                imgB = url + mapB
+                imgC = url + mapC
                 break
-    
+
+    print(f"{image}: predict{label}, true{trueLabel}")
     return [x,y,z,imgA,imgB,imgC,label, trueLabel]
 
 
@@ -129,7 +128,7 @@ def createMLModel(data):
 
 def renderLabel(form):
     """
-    prepairs a render_template to show the label.html web page.
+    prepares a render_template to show the label.html web page.
 
     Parameters
     ----------
@@ -144,7 +143,9 @@ def renderLabel(form):
     queue = session['queue']
     img = queue.pop()
     session['queue'] = queue
-    return render_template(url_for('label'), form=form, picture=img, confidence=session['confidence'])
+    # TODO: url_for() vs render_template() ?
+    # url_for('label') vs 'label.html'
+    return render_template('label.html', form=form, picture=img, confidence=session['confidence'])
 
 
 def initializeAL(form, confidence_break=.7):
@@ -197,6 +198,7 @@ def getNextSetOfImages(form, sampling_method):
         renders the label.html webpage.
     """
     data = getData()
+    # data.to_csv("csv.txt") <-- dataframe to csv
     ml_model, train_img_names = createMLModel(data)
     test_set = data[data.index.isin(train_img_names) == False]
 
@@ -206,7 +208,7 @@ def getNextSetOfImages(form, sampling_method):
     return renderLabel(form)
 
 
-def prepairResults(form):
+def prepareResults(form):
     """
     Creates the new machine learning model and gets the confidence of the machine learning model.
 
@@ -220,7 +222,6 @@ def prepairResults(form):
     render_template : flask function
         renders the appropriate webpage based on new confidence score.
     """
-    session['labels'].append(form.choice.data)
     session['sample'] = tuple(zip(session['sample_idx'], session['labels']))
 
     if session['train'] != None:
@@ -232,10 +233,13 @@ def prepairResults(form):
     ml_model, train_img_names = createMLModel(data)
 
     session['confidence'] = np.mean(ml_model.K_fold())
+    print(session['confidence'])
+    print(train_img_names)
     session['labels'] = []
 
     if session['confidence'] < session['confidence_break']:
         health_pic, blight_pic = ml_model.infoForProgress(train_img_names)
+        print('intermediate')
         return render_template('intermediate.html', form=form,
                                confidence="{:.2%}".format(round(session['confidence'], 4)), health_user=health_pic,
                                blight_user=blight_pic, healthNum_user=len(health_pic), blightNum_user=len(blight_pic))
@@ -243,6 +247,7 @@ def prepairResults(form):
         test_set = data.loc[session['test'], :]
         health_pic_user, blight_pic_user, health_pic, blight_pic, health_pic_prob, blight_pic_prob = ml_model.infoForResults(
             train_img_names, test_set)
+        print('final')
         return render_template('final.html', form=form, confidence="{:.2%}".format(round(session['confidence'], 4)),
                                health_user=health_pic_user, blight_user=blight_pic_user,
                                healthNum_user=len(health_pic_user), blightNum_user=len(blight_pic_user),
@@ -255,7 +260,7 @@ def prepairResults(form):
 
 def renderMVMLabel(form):
     """
-    prepairs a render_template to show the man_vs_machine.html web page.
+    prepares a render_template to show the man_vs_machine.html web page.
 
     Parameters
     ----------
@@ -272,7 +277,7 @@ def renderMVMLabel(form):
         new_mvm_pics = session['mvm_pics']
         img = new_mvm_pics.pop()
         session['mvm_pics'] = new_mvm_pics
-        return render_template('label.html', form=form, picture=img)
+        return render_template('mvm_label.html', form=form, picture=img)
     else:
         session.pop('mvm_pics')
         return mvm_results()
@@ -304,15 +309,18 @@ def label():
     if 'labels' not in session:
         session['labels'] = []
 
-    if session['queue'] == [] and session['labels'] == []: # Need more pictures
+    if session['queue'] == [] and session['labels'] == []:  # Need more pictures
         return getNextSetOfImages(form, lowestPercentage)
 
-    elif form.is_submitted() and session['queue'] == []:  # Finished Labeling
-        return prepairResults(form)
-
-    elif form.is_submitted() and session['queue'] != []:  # Still gathering labels
-        session['labels'].append(form.choice.data)
-        return renderLabel(form)
+    elif form.is_submitted():
+        user_select = 'H'
+        if form.b_choice.data:
+            user_select = 'B'
+        session['labels'].append(user_select)
+        if not session['queue']:  # Finished Labeling
+            return prepareResults(form)
+        if session['queue'] != []:  # Still gathering labels
+            return renderLabel(form)
 
     return initializeAL(form, .7)
 
@@ -362,11 +370,11 @@ def retrain(h_disagree_list, u_disagree_list):
     ----------
     h_disagree_list : list of image names
         the images that the model classified as healthy,
-        but the user believes are actually unhealthy
+        but the user believes are truly unhealthy
 
     u_disagree_list : list of image names
         the images that the model classified as unhealthy,
-        but the user believes are actually healthy
+        but the user believes are truly healthy
     """
     new_healthy_images = list(u_disagree_list.split(","))
     new_unhealthy_images = list(h_disagree_list.split(","))
@@ -387,7 +395,7 @@ def retrain(h_disagree_list, u_disagree_list):
     # https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/imageName is this reliable for images?
 
     # which test_set to use? same?
-    test_set = data[data.index.isin(train_img_names) == False]
+    # test_set = data[data.index.isin(train_img_names) == False]
     test_set = data.loc[session['test'], :]
     health_pic_user, blight_pic_user, health_pic, blight_pic, health_pic_prob, blight_pic_prob = ml_model.infoForResults(
         train_img_names, test_set)
@@ -401,55 +409,130 @@ def retrain(h_disagree_list, u_disagree_list):
                            b_prob=blight_pic_prob)
 
 
+@app.route("/pro_model.html", methods=['GET'])
+def pro_model():
+    """
+    Displays professional AI model's classification of healthy and unhealthy corn pictures.
+
+    Returns
+    -------
+    render_template : flask function
+        renders the professional AI model page.
+    """
+    return render_template('pro_model.html')
+
+
 # create new form? because i don't understand current form?
 @app.route("/man_vs_machine.html", methods=['GET', 'POST'])
 def man_vs_machine():
+    """
+    Begins man versus machine game, pitting user against pro model.
+
+    Returns
+    -------
+    render_template : flask function
+        renders a label form to facilitate the man versus machine game.
+    """
     form = LabelForm()
     if request.method == 'POST':  # label selected for a corn picture.
-        session['mvm_choices'] = session['mvm_choices'] + [(form.corn_picture.data, form.choice.data)]
+        user_select = 'H'
+        if form.b_choice.data:
+            user_select = 'B'
+        session['mvm_choices'] = session['mvm_choices'] + [(form.corn_picture.data, user_select)]
         return renderMVMLabel(form)
     else:  # a GET request, clicking the button to play MVM from the home page, starting a new game.
         session['mvm_choices'] = []
-        session['mvm_pics'] = ['DSC00027.JPG', 'DSC00076.JPG', 'DSC00029.JPG', 'DSC00030.JPG', 'DSC00031.JPG',
-                               'DSC00033.JPG', 'DSC00025.JPG', 'DSC00037.JPG', 'DSC00038.JPG', 'DSC00036.JPG']
+        session['mvm_pics'] = []
+        data = pd.read_csv("classifications.csv")
+        session['jank'] = random.sample(data.iloc[:, 0].values.tolist(), 10)
+        print(session['jank'])
+        for image in session['jank']:
+            if image[0:3] == "DSC":
+                session['mvm_pics'].append(image + ".JPG")
+            else:
+                session['mvm_pics'].append(image + ".Jpeg")
+        print(session['mvm_pics'])
         return renderMVMLabel(form)
 
 
 # jank results page for the man vs machine game.
 @app.route("/mvm_results.html", methods=['GET'])
 def mvm_results():
-    # jank literal copy of session['mvm_pictures']
-    session['temp_pics'] = ['DSC00027.JPG', 'DSC00076.JPG', 'DSC00029.JPG', 'DSC00030.JPG', 'DSC00031.JPG',
-                            'DSC00033.JPG', 'DSC00025.JPG', 'DSC00037.JPG', 'DSC00038.JPG', 'DSC00036.JPG']
-    session['temp_pics'].reverse()  # reversed order because session['mvm_pictures'] pictures obtained with pop().
+    """
+    Shows results of user versus pro model game.
 
-    # jank distribution of corn pictures between healthy & unhealthy, represents how machine classification. random
-    # jank determination of true labels for corn pictures. also random
+    Returns
+    -------
+    render_template : flask function
+        renders a mvm_results.html page displaying results of user against pro model in man versus machine game.
+    """
     machine_choices = []
     true_labels = []
-    for picture_label in session['mvm_choices']:
-        if random.randint(0, 1) == 1:  # machine selects picture as healthy
-            machine_choices.append((picture_label[0], 'H'))
-        else:  # machine selects picture as unhealthy
-            machine_choices.append((picture_label[0], 'B'))
-        if random.randint(0, 1) == 1:  # picture is given healthy true label
-            true_labels.append((picture_label[0], 'H'))
-        else:  # picture is given unhealthy true label
-            true_labels.append((picture_label[0], 'B'))
+    stuff = []
+    # TODO: reverse order?
+    for image in session['jank']:
+        image_specs = getImage(image)  # 0 healthy, 1 unhealthy
+        if image[0:3] == "DSC":
+            image = image + ".JPG"
+        else:
+            image = image + ".Jpeg"
+        # get AI's predicted labels
+        label = 'H'
+        if image_specs[6] == '1':
+            label = 'B'
+        machine_choices.append((image, label))
+        # get true labels
+        label = 'H'
+        if image_specs[7] == '1':
+            label = 'B'
+        true_labels.append((image, label))
+        stuff.append([image, image_specs[0], image_specs[1], image_specs[2],
+                      image_specs[3], image_specs[4], image_specs[5]])
 
     print(f"mvm choices {session['mvm_choices']}")
     print(f"mac choices {machine_choices}")
-    print(f"true labels {true_labels}")  # actually random
+    print(f"true labels {true_labels}")
 
     user_correct = 0
+    user_tp = 0
+    user_tn = 0
+    user_fp = 0
+    user_fn = 0
     machine_correct = 0
+    machine_tp = 0
+    machine_tn = 0
+    machine_fp = 0
+    machine_fn = 0
     for i in range(0, len(true_labels)):
         if session['mvm_choices'][i][1] == true_labels[i][1]:
             user_correct += 1
+            if session['mvm_choices'][i][1] == 'H':
+                user_tp += 1
+            else:
+                user_tn += 1
+        else:
+            if session['mvm_choices'][i][1] == 'H':
+                user_fp += 1
+            else:
+                user_fn += 1
         if machine_choices[i][1] == true_labels[i][1]:
             machine_correct += 1
+            if machine_choices[i][1] == 'H':
+                machine_tp += 1
+            else:
+                machine_tn += 1
+        else:
+            if machine_choices[i][1] == 'H':
+                machine_fp += 1
+            else:
+                machine_fn += 1
     user_accuracy = user_correct / len(true_labels)
     machine_accuracy = machine_correct / len(true_labels)
+    win_quote = "You Tie!"
+    if machine_accuracy < user_accuracy:
+        win_quote = "You Win!"
+    elif user_accuracy < machine_accuracy:
+        win_quote = "You Lose!"
 
     return render_template('mvm_results.html',
                            user_healthy_pics=[picture_label[0] for picture_label in session['mvm_choices']
@@ -460,16 +543,25 @@ def mvm_results():
                                                  if picture_label[1] == 'H'],
                            machine_unhealthy_pics=[picture_label[0] for picture_label in machine_choices
                                                    if picture_label[1] == 'B'],
+                           true_healthy_pics=[picture_label[0] for picture_label in true_labels
+                                              if picture_label[1] == 'H'],
+                           true_unhealthy_pics=[picture_label[0] for picture_label in true_labels
+                                                if picture_label[1] == 'B'],
                            user_accuracy=user_accuracy,
-                           machine_accuracy=machine_accuracy, )
-    health_pic_user, blight_pic_user, health_pic, blight_pic, health_pic_prob, blight_pic_prob = ml_model.infoForResults(train_img_names, test_set)
-    return render_template('retrain.html', confidence = "{:.2%}".format(round(session['confidence'],4)), health_user = health_pic_user, blight_user = blight_pic_user, healthNum_user = len(health_pic_user), blightNum_user = len(blight_pic_user), health_test = health_pic, unhealth_test = blight_pic, healthyNum = len(health_pic), unhealthyNum = len(blight_pic), healthyPct = "{:.2%}".format(len(health_pic)/(200-(len(health_pic_user)+len(blight_pic_user)))), unhealthyPct = "{:.2%}".format(len(blight_pic)/(200-(len(health_pic_user)+len(blight_pic_user)))), h_prob = health_pic_prob, b_prob = blight_pic_prob)
+                           machine_accuracy=machine_accuracy,
+                           user_tp=user_tp, user_tn=user_tn, user_fp=user_fp, user_fn=user_fn,
+                           machine_tp=machine_tp, machine_tn=machine_tn, machine_fp=machine_fp, machine_fn=machine_fn,
+                           win_quote=win_quote,
+                           stuff=stuff, )
+    # the above could be cleaned up, however...
+
 
 
 @app.route("/restart.html", methods=['GET'])
 def restart():
     session.pop('model', None)
     return redirect(url_for('home'))
+
 
 #app.run( host='127.0.0.1', port=5000, debug='True', use_reloader = False)
 
