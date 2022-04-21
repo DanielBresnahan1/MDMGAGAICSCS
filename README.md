@@ -42,9 +42,18 @@ Scroll down until one is able to see the test images the model classified itself
 Use checkboxes to disagree with pictures labeled by model, then scroll down to bottom of page and select "retrain" button. 
 
 --Image Patching--
-To patch the images to create usefull data for the Neural Network, you need to use the ImagePatching.py File. This file contains a class that will handle all the logic and implementation for iamge striding, and tiling. To utilize, simply instantiate the class with a few important parameters 1. The directory you with to save the new files. 2. The size of the patches to generate (reccomend 224x224) and 3. The size of the original image. 
+To patch the images to create useful data for the Neural Network, you need to use the ImagePatching.py File. This file contains a class that will handle all the logic and implementation for iamge striding, and tiling. To utilize, simply instantiate the class with a few important parameters 1. The directory you with to save the new files. 2. The size of the patches to generate (reccomend 224x224) and 3. The size of the original image. 
 
 With the class instantiated, call the class method patch (patcher.patch) and supply the location of the image, and the coordinates of the lession in the form (x1, y2, x2, y2). If the image is negative (ie. does not contain a lesion) supply (0,0,0,0) instead. 
 
-It is possible to use colate data if you wish to rerun the expiriment entirely, however, do note it is a hard coded script, so you will have to change each path name to represent the associated path on your system. 
+It is possible to use colate data if you wish to rerun the experiment entirely, however, do note it is a hard coded script, so you will have to change each path name to represent the associated path on your system. 
 
+--Man Versus Machine M4--
+Functionality added to demonstrate the capabilities of a trained AI against a regular human to classify disease in corn plants. 
+User can now play against the AI by selecting 'Healthy' or 'Unhealthy' 10 times and then view the resulting scores and true images labels at the end. 
+Implemented through logic in web.py and realized by using a different image url for the new s3 server along with updated CSS. 
+
+--CSS M4--
+This milestone features an overall resign for the website in terms of visuals, including CSS, boostrap templating, html layout, and javascript. 
+With less css files and better templates, the application should be more maintainable for future development. 
+Hopefully this version is more appealing to look at. 
