@@ -359,30 +359,23 @@ def feedback(h_list, u_list, h_conf_list, u_conf_list):
 
 
 
-@app.route("/retrain.html", methods=['GET'])
-@app.route("/retrain/<h_disagree_list>/<u_disagree_list>", methods=['GET'])
-def retrain(h_disagree_list, u_disagree_list):
+@app.route("/retrain.html", methods=['POST'])
+def retrain():
     """
     Retrain the random forest algorithm with the images the user already classified
     and with the images the user disagrees with from the current model.
-
-    Parameters
-    ----------
-    h_disagree_list : list of image names
-        the images that the model classified as healthy,
-        but the user believes are truly unhealthy
-
-    u_disagree_list : list of image names
-        the images that the model classified as unhealthy,
-        but the user believes are truly healthy
     """
-    new_healthy_images = list(u_disagree_list.split(","))
-    new_unhealthy_images = list(h_disagree_list.split(","))
-    if new_healthy_images[0] != 'null':
+    h_disagree_list = request.form['h_disagree'].split(',')
+    h_disagree_list.pop()
+    new_unhealthy_images = h_disagree_list
+    u_disagree_list = request.form['u_disagree'].split(',')
+    u_disagree_list.pop()
+    new_healthy_images = u_disagree_list
+    if new_healthy_images:
         for image_name in new_healthy_images:
             session['train'] = session['train'] + ((image_name, 'H'),)
             session['test'].remove(image_name)
-    if new_unhealthy_images[0] != 'null':
+    if new_unhealthy_images:
         for image_name in new_unhealthy_images:
             session['train'] = session['train'] + ((image_name, 'B'),)
             session['test'].remove(image_name)
