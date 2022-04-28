@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+#Notepadd++
+*.bak
+
 #Machine Learning
 .h5
 
