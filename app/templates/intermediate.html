@@ -24,7 +24,7 @@
             <h1 class="display-6">{{healthNum_user}} Healthy Pictures</h1>
             <div style="display:flex;flex-wrap:wrap;">
                 {% for i in health_user %}
-                    <div class="card" style="width: 18rem;">
+                    <div class="card" style="width:18rem;margin:0.5rem;border-top-width: 3px;padding-bottom: 0px;border-right-width: 3px;border-left-width: 3px;border-bottom-width: 3px;">
                         <img class="card-img-top" src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{i}}" alt="corn pic {{i}}">
                     </div>
                 {% endfor %}
@@ -32,7 +32,7 @@
             <h1 class="display-5">{{blightNum_user}} Unhealthy Pictures</h1>
             <div style="display:flex;flex-wrap:wrap;">
                 {% for i in blight_user %}
-                    <div class="card" style="width: 18rem;">
+                    <div class="card" style="width:18rem;margin:0.5rem;border-top-width: 3px;padding-bottom: 0px;border-right-width: 3px;border-left-width: 3px;border-bottom-width: 3px;">
                         <img class="card-img-top" src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{i}}" alt="corn pic {{i}}">
                     </div>
                 {% endfor %}

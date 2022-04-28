@@ -359,30 +359,23 @@ def feedback(h_list, u_list, h_conf_list, u_conf_list):
 
 
 
-@app.route("/retrain.html", methods=['GET'])
-@app.route("/retrain/<h_disagree_list>/<u_disagree_list>", methods=['GET'])
-def retrain(h_disagree_list, u_disagree_list):
+@app.route("/retrain.html", methods=['POST'])
+def retrain():
     """
     Retrain the random forest algorithm with the images the user already classified
     and with the images the user disagrees with from the current model.
-
-    Parameters
-    ----------
-    h_disagree_list : list of image names
-        the images that the model classified as healthy,
-        but the user believes are truly unhealthy
-
-    u_disagree_list : list of image names
-        the images that the model classified as unhealthy,
-        but the user believes are truly healthy
     """
-    new_healthy_images = list(u_disagree_list.split(","))
-    new_unhealthy_images = list(h_disagree_list.split(","))
-    if new_healthy_images[0] != 'null':
+    h_disagree_list = request.form['h_disagree'].split(',')
+    h_disagree_list.pop()
+    new_unhealthy_images = h_disagree_list
+    u_disagree_list = request.form['u_disagree'].split(',')
+    u_disagree_list.pop()
+    new_healthy_images = u_disagree_list
+    if new_healthy_images:
         for image_name in new_healthy_images:
             session['train'] = session['train'] + ((image_name, 'H'),)
             session['test'].remove(image_name)
-    if new_unhealthy_images[0] != 'null':
+    if new_unhealthy_images:
         for image_name in new_unhealthy_images:
             session['train'] = session['train'] + ((image_name, 'B'),)
             session['test'].remove(image_name)
@@ -445,7 +438,7 @@ def man_vs_machine():
         session['mvm_pics'] = []
         data = pd.read_csv("classifications.csv")
         session['jank'] = random.sample(data.iloc[:, 0].values.tolist(), 10)
-        print(session['jank'])
+        print(f"session[jank] {session['jank']}")
         for image in session['jank']:
             if image[0:3] == "DSC":
                 session['mvm_pics'].append(image + ".JPG")
@@ -469,7 +462,7 @@ def mvm_results():
     machine_choices = []
     true_labels = []
     stuff = []
-    # TODO: reverse order?
+    session['jank'].reverse()
     for image in session['jank']:
         image_specs = getImage(image)  # 0 healthy, 1 unhealthy
         if image[0:3] == "DSC":
@@ -533,6 +526,13 @@ def mvm_results():
         win_quote = "You Win!"
     elif user_accuracy < machine_accuracy:
         win_quote = "You Lose!"
+
+    print(f"user_healthy_pics {[picture_label[0] for picture_label in session['mvm_choices'] if picture_label[1] == 'H']}")
+    print(f"user_unhealthy_pics {[picture_label[0] for picture_label in session['mvm_choices'] if picture_label[1] == 'B']}")
+    print(f"AI_healthy_pics {[picture_label[0] for picture_label in machine_choices if picture_label[1] == 'H']}")
+    print(f"AI_unhealthy_pics {[picture_label[0] for picture_label in machine_choices if picture_label[1] == 'B']}")
+    print(f"true_healthy_pics {[picture_label[0] for picture_label in true_labels if picture_label[1] == 'H']}")
+    print(f"true_unhealthy_pics {[picture_label[0] for picture_label in true_labels if picture_label[1] == 'B']}")
 
     return render_template('mvm_results.html',
                            user_healthy_pics=[picture_label[0] for picture_label in session['mvm_choices']

@@ -9,6 +9,10 @@
                    style="background-color:#ff3547;border-color:#ff3547;padding-left:2rem;padding-right:2rem"
                    href="restart.html" role="button">
                     Home</a>
+                <button id="retrain_btn" class="btn btn-lg btn-primary"
+                   style="background-color:#ff3547;border-color:#ff3547;padding-left:2rem;padding-right:2rem"
+                   role="button">
+                    Retrain</button>
             </div>
         </div>
         <h1 class="display-6" style="margin-bottom:0;">Your model is {{ confidence }} confident!</h1>
@@ -16,35 +20,66 @@
             <h1 class="display-6">Your Chosen Healthy Pictures</h1>
             <div style="display:flex;flex-wrap:wrap;">
                 {% for i in health_user %}
-                    <div class="card" style="width: 18rem;">
-                        <img class="card-img-top" src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{i}}" alt="corn pic {{i}}">
+                    <div class="card" style="width:18rem;margin:0.5rem;border-top-width: 3px;padding-bottom: 0px;border-right-width: 3px;border-left-width: 3px;border-bottom-width: 3px;">
+                        <img class="card-img-top" style="width:288px; height:188px;" src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{i}}" alt="{{i}}">
                     </div>
                 {% endfor %}
             </div>
             <h1 class="display-5">Your Chosen Unhealthy Pictures</h1>
             <div style="display:flex;flex-wrap:wrap;">
                 {% for i in blight_user %}
-                    <div class="card" style="width: 18rem;">
-                        <img class="card-img-top" src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{i}}" alt="corn pic {{i}}">
+                    <div class="card" style="width:18rem;margin:0.5rem;border-top-width: 3px;padding-bottom: 0px;border-right-width: 3px;border-left-width: 3px;border-bottom-width: 3px;">
+                        <img class="card-img-top" style="width:288px; height:188px;" src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{i}}" alt="{{i}}">
                     </div>
                 {% endfor %}
             </div>
             <h1 class="display-6">Your AI's Healthy Pictures</h1>
             <div style="display:flex;flex-wrap:wrap;">
-                {% for i in range(0, healthyNum) %}
-                    <div class="card" style="width: 18rem;">
-                        <img class="card-img-top" src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{health_test[i]}}" alt="corn pic {{i}}">
+                {% for i in health_test %}
+                    <div class="card ai healthy" onclick="retrain_toggle(this)" style="width:18rem;margin:0.5rem;border-top-width: 3px;padding-bottom: 0px;border-right-width: 3px;border-left-width: 3px;border-bottom-width: 3px;">
+                        <img class="card-img-top" style="width:288px; height:188px;" src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{i}}" alt="{{i}}">
                     </div>
                 {% endfor %}
             </div>
             <h1 class="display-6">Your AI's Unhealthy Pictures</h1>
             <div style="display:flex;flex-wrap:wrap;">
-                {% for i in range(0, unhealthyNum) %}
-                    <div class="card" style="width: 18rem;">
-                        <img class="card-img-top" src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{unhealth_test[i]}}" alt="corn pic {{i}}">
+                {% for i in unhealth_test %}
+                    <div class="card ai unhealthy" onclick="retrain_toggle(this)" style="width:18rem;margin:0.5rem;border-top-width: 3px;padding-bottom: 0px;border-right-width: 3px;border-left-width: 3px;border-bottom-width: 3px;">
+                        <img class="card-img-top" style="width:288px; height:188px;" src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{i}}" alt="{{i}}">
                     </div>
                 {% endfor %}
             </div>
         </div>
     </div>
+    <div style="display:none;">
+        <form id="retrain_form" action="retrain.html" method="post" onsubmit="return retrain()">
+            <input type="hidden" id="h_disagree_form" name="h_disagree" value="">
+            <input type="hidden" id="u_disagree_form" name="u_disagree" value="">
+        </form>
+    </div>
+    <script>
+        function retrain_toggle(img) {
+            img.classList.toggle("border-danger");
+        }
+
+        var retrain_button = document.getElementById("retrain_btn");
+        retrain_button.addEventListener("click", retrain);
+        function retrain() {
+            let h_disagree_list = document.getElementsByClassName("ai healthy border-danger");
+            let h_disagree_string = ""
+            for (let i = 0; i < h_disagree_list.length; i++) {
+                h_disagree_string += h_disagree_list[i].childNodes[1].alt + ",";
+            }
+            document.getElementById("h_disagree_form").value = h_disagree_string;
+
+            let u_disagree_list = document.getElementsByClassName("ai unhealthy border-danger");
+            let u_disagree_string = ""
+            for (let i = 0; i < u_disagree_list.length; i++) {
+                u_disagree_string += u_disagree_list[i].childNodes[1].alt + ",";
+            }
+            document.getElementById("u_disagree_form").value = u_disagree_string;
+
+            document.getElementById('retrain_form').submit();
+        }
+    </script>
 {% endblock page_header %}
