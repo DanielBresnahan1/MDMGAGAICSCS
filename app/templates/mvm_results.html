@@ -4,9 +4,11 @@
     <div class="jumbotron" style="background-color:#ffffff;">
 		<!--Plotly graph code starts here-->
 		<div id='graphDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
-		<div id='image'><!-- This is where the image displays --></div>
-        <div id='image2'><!-- This is where the image displays --></div>
-        <div id='image3'><!-- This is where the image displays --></div>
+		<div class = 'row'>
+            <div id='image' class="column"></div>
+            <div id='image2'class="column"></div>
+            <div id='image3'class="column"></div>
+        </div>
 		<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
 		<script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js'></script>
 		<script src='/static/javascript/3dHover.js'></script>
@@ -18,9 +20,9 @@
                 imgs = []
               for (i = 0; i < stuff.length; i++)
               {
-                x.push(stuff[i][1])
-                y.push(stuff[i][2])
-                z.push(stuff[i][3])
+                x.push(Number(stuff[i][1]).toFixed(3))
+                y.push(Number(stuff[i][2]).toFixed(3))
+                z.push(Number(stuff[i][3]).toFixed(3))
                 imgs.push(stuff[i][4])
                 imgs.push(stuff[i][5])
                 imgs.push(stuff[i][6])
