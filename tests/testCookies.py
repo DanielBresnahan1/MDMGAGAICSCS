@@ -26,18 +26,16 @@ def testCookies(url = "http://127.0.0.1:5000/"):
 
     choice0 = driver.find_element_by_id("choice-0")
     choice1 = driver.find_element_by_id("choice-1")
-    submit = driver.find_element_by_id("submit")
 
 
     choice0.click()
-    submit.click()
 
     #Get through all 9
     for i in range(0, 9):
 
-        submit = driver.find_element_by_id("submit")
+        choice0 = driver.find_element_by_id("choice-0")
 
-        submit.click()
+        choice0.click()
 
 
 
@@ -48,29 +46,28 @@ def testCookies(url = "http://127.0.0.1:5000/"):
 
     choice0 = driver.find_element_by_id("choice-0")
     choice1 = driver.find_element_by_id("choice-1")
-    submit = driver.find_element_by_id("submit")
 
 
     choice0.click()
-    submit.click()
 
     #Get through all 9
     for i in range(0, 4):
 
-        submit = driver.find_element_by_id("submit")
+        choice0 = driver.find_element_by_id("choice-0")
 
-        submit.click()
+        choice0.click()
 
-    healthy = driver.find_element_by_id("healthy")
-    unhealthy = driver.find_element_by_id("unhealthy")
+
     confidence = driver.find_element_by_id("confidence")
+    himages = driver.find_elements_by_id("himage")
+    uimages = driver.find_elements_by_id("uimage")
+        
 
     #Test Results
 
-    assert confidence.text == "Confidence: 100.00%"
-    assert healthy.text == "Healthy(User): 15"
-    assert unhealthy.text == "Unhealthy(User): 0"
-
+    assert confidence.text == "Your model is 100.00% confident!"
+    assert len(himages) == 15
+    assert len(uimages) == 0
     #Make sure to reset cookies
     restart = driver.find_element_by_id("restart")
     restart.click()
