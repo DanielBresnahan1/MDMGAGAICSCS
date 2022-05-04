@@ -13,10 +13,77 @@
         </div>
 		<!--Plotly graph code starts here-->
 		<div id='graphDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
-		<div id='image'><!-- This is where the image displays --></div>
+		<div class = 'row'>
+            <div id='image' class="column"></div>
+            <div id='image2'class="column"></div>
+            <div id='image3'class="column"></div>
+        </div>
 		<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
 		<script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js'></script>
-		<script src='/static/javascript/3dHover.js'></script>
 		<!--Plotly graph code ends here-->
+        <script type="text/javascript">
+            function createPlot(stuff){
+                x = []
+                y = []
+                z = []
+                imgs = []
+              for (i = 0; i < stuff.length; i++)
+              {
+                x.push(Number(stuff[i][1]).toFixed(3))
+                y.push(Number(stuff[i][2]).toFixed(3))
+                z.push(Number(stuff[i][3]).toFixed(3))
+                imgs.push(stuff[i][4])
+                imgs.push(stuff[i][5])
+                imgs.push(stuff[i][6])
+              } 
+              var data = [{
+                x: x,
+                y: y,
+                z: z,
+                mode: 'markers',
+                type: 'scatter3d',
+                marker: {
+                    color: 'rgb(23, 190, 207)',
+                    size: 2
+                }
+                }];
+
+                Plotly.newPlot('graphDiv', data, {
+                hovermode: 'closest'
+                });
+
+                document.getElementById('graphDiv').on('plotly_hover', function(data) {
+                document.getElementById('image').innerHTML="<img src='" + imgs[data.points[0].pointNumber * 3] + "' />";
+                document.getElementById('image2').innerHTML="<img src='" + imgs[(data.points[0].pointNumber * 3) + 1] + "' />";
+                document.getElementById('image3').innerHTML="<img src='" + imgs[(data.points[0].pointNumber * 3) + 2] + "' />";
+                });
+            }
+            createPlot({{ stuff | safe}})
+
+        </script>
+        <div>
+            <h1 style="color: #5e9ca0;">What am I seeing here?</h1>
+            <p>The 3d graph above you is the representation of the final layer of the trained professional model which classifies images of corn. Each dot represents the classification of a training sample, comprised of three numbers corresponding to the RES-NET classification for the heat map produced by Model A, Model B, and Model C. Each one of those dots is then used to train a random forest, which does the final yes/no classification on images.</p>
+            <h2 style="color: #5e9ca0;">What is a RES-NET? or Model A, B, C?</h2>
+            <p>RES-NET, Model A, Model B, and Model C are all different types of convolutional neural networks used to classify the corn photos. A RES-NET is a complicated Neural Network structure created by google, described in this <a href="https://towardsdatascience.com/understanding-and-visualizing-resnets-442284831be8">awesome article.</a> <br /><br />Models A, B, and C are more traditional types of convolutional neural networks, that classify images based on adjacent pixel structures. Read more about 2d convolutions <a href="https://towardsdatascience.com/intuitively-understanding-convolutions-for-deep-learning-1f6f42faee1#:~:text=The%202D%20convolution%20is%20a,into%20a%20single%20output%20pixel">Here</a>. If you want to see the structure for Model B scroll down to the bottom of the page!</p>
+            <h2 style="color: #5e9ca0;">How are RES-NET, Model A, B, and C used?</h2>
+            <p>Below are some visualizations which should help somewhat, but the idea is that Models A, B, and C will generate heat maps that RES-NET will classify to create the coordinate points for the final random forest to classify. To generate the heat maps, the original images are turned into patches of size 224*224. each patch is then passed through each model A to generate some classification value, this classification value is used as the pixel value in the corresponding heat map. For example, image DSC00317 is turned into 126*193 patches of size 224*224, the patch which contains pixels (0,0) to (224,224) corresponds to pixel (0,0) on the heat map, where its value is the classification score that Model A, B, or C gave it. These heat maps are then passed to RES-NET, which generates the coordinates for the points seen above.</p>
+            <h2 style="color: #5e9ca0;">
+                Classification Pipeline
+            </h2>
+            <img src="{{url_for('static', filename='images/pipeline.png')}}" width=75% height=auto></img>
+            <h2 style="color: #5e9ca0;">
+                Model B Architecture
+            </h2>
+            <head>
+                <title>ModelB.html</title>
+                <meta charset="utf-8"/>
+            </head>
+            <body>
+                <div class="mxgraph" style="max-width:100%;border:1px solid transparent;" data-mxgraph="{&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;resize&quot;:true,&quot;xml&quot;:&quot;&lt;mxfile host=\&quot;app.diagrams.net\&quot; modified=\&quot;2022-05-04T02:25:44.236Z\&quot; agent=\&quot;5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36\&quot; etag=\&quot;J1idR29Ozi1Ol46bAHnt\&quot; version=\&quot;17.5.0\&quot; type=\&quot;device\&quot;&gt;&lt;diagram id=\&quot;Or8EPxRf1h1XUFOuSwEz\&quot; name=\&quot;Page-1\&quot;&gt;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&lt;/diagram&gt;&lt;/mxfile&gt;&quot;,&quot;toolbar&quot;:&quot;pages zoom layers lightbox&quot;,&quot;page&quot;:0}"></div>
+                <script type="text/javascript" src="https://app.diagrams.net/js/viewer-static.min.js"></script>
+            </body>
+        </div>
     </div>
+    
 {% endblock page_header %}
