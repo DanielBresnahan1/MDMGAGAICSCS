@@ -26,28 +26,21 @@ def testRandomForestHealthy(url = "http://127.0.0.1:5000/"):
 
     choice0 = driver.find_element_by_id("choice-0")
     choice1 = driver.find_element_by_id("choice-1")
-    submit = driver.find_element_by_id("submit")
 
         #Assert that they are clickable
     assert choice0.is_enabled
     assert choice1.is_enabled
     choice0.click()
-    assert submit.is_enabled
-    submit.click()
 
     #Get through all 9
     for i in range(0, 9):
         choice0 = driver.find_element_by_id("choice-0")
         choice1 = driver.find_element_by_id("choice-1")
-        submit = driver.find_element_by_id("submit")
 
         assert choice0.is_enabled
         assert choice1.is_enabled
-        assert submit.is_enabled
-        submit.click()
+        choice0.click()
 
-    healthy = driver.find_element_by_id("healthy")
-    unhealthy = driver.find_element_by_id("unhealthy")
     confidence = driver.find_element_by_id("confidence")
     himages = driver.find_elements_by_id("himage")
     uimages = driver.find_elements_by_id("uimage")
@@ -55,9 +48,7 @@ def testRandomForestHealthy(url = "http://127.0.0.1:5000/"):
 
     #Test Results
 
-    assert confidence.text == "Confidence: 100.00%"
-    assert healthy.text == "Healthy(User): 10"
-    assert unhealthy.text == "Unhealthy(User): 0"
+    assert confidence.text == "Your model is 100.00% confident!"
     assert len(himages) == 10
     assert len(uimages) == 0
 

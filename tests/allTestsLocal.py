@@ -13,7 +13,9 @@
 
 from randomForestTestsLocal import randomForestTestsLocal
 from testHomePage import testHomePage
+from tests.testManVsMachine import testManVsMachine
 
 
 testHomePage()
 randomForestTestsLocal()
+testManVsMachine()

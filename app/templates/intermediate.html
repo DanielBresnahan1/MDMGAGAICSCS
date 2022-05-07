@@ -7,7 +7,7 @@
             <div style="float:right">
                 <a class="btn btn-lg btn-primary"
                    style="background-color:#ff3547;border-color:#ff3547;padding-left:2rem;padding-right:2rem"
-                   href="restart.html" role="button">
+                   href="restart.html" role="button" id = "restart">
                     Restart</a>
                 <a class="btn btn-lg btn-primary"
                    style="background-color:#ff3547;border-color:#ff3547;padding-left:2rem;padding-right:2rem"
@@ -19,13 +19,13 @@
                     Home</a>
             </div>
         </div>
-        <h1 class="display-6" style="margin-bottom:0;">Your model is {{ confidence }} confident!</h1>
+        <h1 class="display-6" style="margin-bottom:0;" id = "confidence">Your model is {{ confidence }} confident!</h1>
         <div>
             <h1 class="display-6">{{healthNum_user}} Healthy Pictures</h1>
             <div style="display:flex;flex-wrap:wrap;">
                 {% for i in health_user %}
                     <div class="card" style="width:18rem;margin:0.5rem;border-top-width: 3px;padding-bottom: 0px;border-right-width: 3px;border-left-width: 3px;border-bottom-width: 3px;">
-                        <img class="card-img-top" src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{i}}" alt="corn pic {{i}}">
+                        <img id = "himage" class="card-img-top" src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{i}}" alt="corn pic {{i}}">
                     </div>
                 {% endfor %}
             </div>
@@ -33,7 +33,7 @@
             <div style="display:flex;flex-wrap:wrap;">
                 {% for i in blight_user %}
                     <div class="card" style="width:18rem;margin:0.5rem;border-top-width: 3px;padding-bottom: 0px;border-right-width: 3px;border-left-width: 3px;border-bottom-width: 3px;">
-                        <img class="card-img-top" src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{i}}" alt="corn pic {{i}}">
+                        <img id = "uimage" class="card-img-top" src="https://cornimagesbucket.s3.us-east-2.amazonaws.com/images_compressed/{{i}}" alt="corn pic {{i}}">
                     </div>
                 {% endfor %}
             </div>

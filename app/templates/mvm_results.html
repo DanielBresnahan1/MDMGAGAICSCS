@@ -57,7 +57,7 @@
             <div style="float:right">
                 <a class="btn btn-lg btn-primary"
                    style="background-color:#ff3547;border-color:#ff3547;padding-left:2rem;padding-right:2rem"
-                   href="restart.html" role="button">
+                   id = "restart" href="restart.html" role="button">
                     Home</a>
             </div>
         </div>
@@ -71,7 +71,7 @@
                         {% else %}
                             {% set border_type = 'danger' %}
                         {% endif %}
-                        <div class="card border-{{border_type}}" style="width:18rem;margin:0.5rem;border-top-width: 3px;padding-bottom: 0px;border-right-width: 3px;border-left-width: 3px;border-bottom-width: 3px;">
+                        <div id = "himage" class="card border-{{border_type}}" style="width:18rem;margin:0.5rem;border-top-width: 3px;padding-bottom: 0px;border-right-width: 3px;border-left-width: 3px;border-bottom-width: 3px;">
                             <img class="card-img-top" style="width:288px; height:188px;" src="https://mdmgcapstone.s3.amazonaws.com/{{i}}" alt="corn pic {{i}}">
                         </div>
                     {% endfor %}
@@ -84,7 +84,7 @@
                         {% else %}
                             {% set border_type = 'danger' %}
                         {% endif %}
-                        <div class="card border-{{border_type}}" style="width:18rem;margin:0.5rem;border-top-width: 3px;padding-bottom: 0px;border-right-width: 3px;border-left-width: 3px;border-bottom-width: 3px;">
+                        <div id = "uimage" class="card border-{{border_type}}" style="width:18rem;margin:0.5rem;border-top-width: 3px;padding-bottom: 0px;border-right-width: 3px;border-left-width: 3px;border-bottom-width: 3px;">
                             <img class="card-img-top" style="width:288px; height:188px;" src="https://mdmgcapstone.s3.amazonaws.com/{{i}}" alt="corn pic {{i}}">
                         </div>
                     {% endfor %}
@@ -99,7 +99,7 @@
                         {% else %}
                             {% set border_type = 'danger' %}
                         {% endif %}
-                        <div class="card border-{{border_type}}" style="width:18rem;margin:0.5rem;border-top-width: 3px;padding-bottom: 0px;border-right-width: 3px;border-left-width: 3px;border-bottom-width: 3px;">
+                        <div id = "aihimage" class="card border-{{border_type}}" style="width:18rem;margin:0.5rem;border-top-width: 3px;padding-bottom: 0px;border-right-width: 3px;border-left-width: 3px;border-bottom-width: 3px;">
                             <img class="card-img-top" style="width:288px; height:188px;" src="https://mdmgcapstone.s3.amazonaws.com/{{i}}" alt="corn pic {{i}}">
                         </div>
                     {% endfor %}
@@ -112,7 +112,7 @@
                         {% else %}
                             {% set border_type = 'danger' %}
                         {% endif %}
-                        <div class="card border-{{border_type}}" style="width:18rem;margin:0.5rem;border-top-width: 3px;padding-bottom: 0px;border-right-width: 3px;border-left-width: 3px;border-bottom-width: 3px;">
+                        <div id = "aiuimage" class="card border-{{border_type}}" style="width:18rem;margin:0.5rem;border-top-width: 3px;padding-bottom: 0px;border-right-width: 3px;border-left-width: 3px;border-bottom-width: 3px;">
                             <img class="card-img-top" style="width:288px; height:188px;" src="https://mdmgcapstone.s3.amazonaws.com/{{i}}" alt="corn pic {{i}}">
                         </div>
                     {% endfor %}
@@ -135,19 +135,19 @@
                 <tbody>
                     <tr>
                         <th scope="row">You</th>
-                        <td>{{ user_tp }}</td>
-                        <td>{{ user_fp }}</td>
-                        <td>{{ user_tn }}</td>
-                        <td>{{ user_fn }}</td>
-                        <td>{{ user_accuracy }}</td>
+                        <td id = "utp">{{ user_tp }}</td>
+                        <td id = "ufp">{{ user_fp }}</td>
+                        <td id = "utn">{{ user_tn }}</td>
+                        <td id = "ufn">{{ user_fn }}</td>
+                        <td id = "uacc">{{ user_accuracy }}</td>
                     </tr>
                     <tr>
                         <th scope="row">AI</th>
-                        <td>{{ machine_tp }}</td>
-                        <td>{{ machine_fp }}</td>
-                        <td>{{ machine_tn }}</td>
-                        <td>{{ machine_fn }}</td>
-                        <td>{{ machine_accuracy }}</td>
+                        <td id = "atp">{{ machine_tp }}</td>
+                        <td id = "afp">{{ machine_fp }}</td>
+                        <td id = "atn">{{ machine_tn }}</td>
+                        <td id = "afn">{{ machine_fn }}</td>
+                        <td id = "aacc">{{ machine_accuracy }}</td>
                     </tr>
                 </tbody>
             </table>
