@@ -166,7 +166,9 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<pre class="fragment">Parameters
+<pre class="fragment">Constructor for ImagePatcher
+
+Parameters
 ----------
 saveDir : str
     Location to save images
@@ -183,6 +185,8 @@ rotBoosting : Boolean, optional
     of patches from a single image. The default is True.
 stride : int, optional
     how far to stride along the major axis of the legion. The default is 10.
+imageSize: tuple, optional
+    The size of the image to patch. DEFAULT = (6000,4000)
 
 Returns
 -------
@@ -247,6 +251,8 @@ lessionCoords : Tuple
     (x1, y1, x2, y2)
 sub_folder : Boolean [true]
     If the iamges should be saved inside a subfolder, or just the parent dir
+Map : Boolean [False]
+    If this patching is for heat map generation, usefull because saving works differently 
 
 Returns
 -------
@@ -326,13 +332,13 @@ images in which a lesion exists.
 Parameters
 ----------
 x1 : int
-    Lesion x1
+    Lession x1
 y1 : int
-    Lesion y1
+    Lession y1
 x2 : int
-    Lesion x2
+    Lession x2
 y2 : int
-    Lesion y2
+    Lession y2
 
 Returns
 -------
@@ -388,7 +394,7 @@ None.</pre>
         </tr>
       </table>
 </div><div class="memdoc">
-<pre class="fragment">Setter to change save Directory, primarly used for test image patching, as all images need to be split cubicly
+<pre class="fragment">Setter to change save Directory
 
 Parameters
 ----------

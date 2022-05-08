@@ -1,8 +1,4 @@
 var searchData=
 [
-  ['patch_0',['patch',['../classimagepatching_1_1_image_patcher.html#a7b8749da10057411ead5f051093c4a4c',1,'imagepatching::ImagePatcher']]],
-  ['patch_5fgrid_1',['patch_grid',['../classimagepatching_1_1_image_patcher.html#ad97d2d2922eb928321abc57f82dce7da',1,'imagepatching::ImagePatcher']]],
-  ['patch_5fpath_2',['patch_path',['../classimagepatching_1_1_image_patcher.html#afe998c5c54130a87e4e3fc1dc373e6a8',1,'imagepatching::ImagePatcher']]],
-  ['patch_5fstride_3',['patch_stride',['../classimagepatching_1_1_image_patcher.html#ac2b4ea55489b17c94a0c60ead7cbc8b6',1,'imagepatching::ImagePatcher']]],
-  ['proj_4',['proj',['../class_visualizer_1_1_image_annotations3_d.html#ad23210fcc633a5aba60a9712fd4d8801',1,'Visualizer::ImageAnnotations3D']]]
+  ['on_5fepoch_5fend_0',['on_epoch_end',['../classbatches__iterator_1_1_batches_iterator.html#a0b797edcef65d2e420a5d0bcebe7e13c',1,'batches_iterator.BatchesIterator.on_epoch_end()'],['../classtest__iterator_1_1_test_iterator.html#a9f509943961146f2c4fd60cbb304e8c4',1,'test_iterator.TestIterator.on_epoch_end()']]]
 ];

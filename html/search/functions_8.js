@@ -1,10 +1,8 @@
 var searchData=
 [
-  ['testcookies_0',['testCookies',['../test_cookies_8py.html#a82747ffa0872f05fb2552259b9c8b108',1,'testCookies']]],
-  ['testhomepage_1',['testHomePage',['../test_home_page_8py.html#ab161cab31f9ef713ca1bf707353724ac',1,'testHomePage']]],
-  ['testrandomforesthealthy_2',['testRandomForestHealthy',['../test_random_forest_healthy_8py.html#a441f6450add3d7c0999a35e6cad0a04b',1,'testRandomForestHealthy']]],
-  ['testrandomforestrandom_3',['testRandomForestRandom',['../test_random_forest_random_8py.html#a9b34fa383778d659cf1c1682229e0374',1,'testRandomForestRandom']]],
-  ['testrandomforestunhealthy_4',['testRandomForestUnhealthy',['../test_random_forest_unhealthy_8py.html#ab47d3b586c5c57f261c3bbd2f1e0f512',1,'testRandomForestUnhealthy']]],
-  ['train_5',['Train',['../classapp_1_1_m_l___class_1_1_active___m_l___model.html#a9ef8dc2cee593e3a2e9aa015f2fdd0c0',1,'app::ML_Class::Active_ML_Model']]],
-  ['transform_6',['transform',['../classapp_1_1_data_preprocessing_1_1_data_preprocessing.html#ab387c21838cf7ae5c22ac978cd26a885',1,'app::DataPreprocessing::DataPreprocessing']]]
+  ['patch_0',['patch',['../classimagepatching_1_1_image_patcher.html#a7b8749da10057411ead5f051093c4a4c',1,'imagepatching::ImagePatcher']]],
+  ['patch_5fgrid_1',['patch_grid',['../classimagepatching_1_1_image_patcher.html#ad97d2d2922eb928321abc57f82dce7da',1,'imagepatching::ImagePatcher']]],
+  ['patch_5fpath_2',['patch_path',['../classimagepatching_1_1_image_patcher.html#afe998c5c54130a87e4e3fc1dc373e6a8',1,'imagepatching::ImagePatcher']]],
+  ['patch_5fstride_3',['patch_stride',['../classimagepatching_1_1_image_patcher.html#ac2b4ea55489b17c94a0c60ead7cbc8b6',1,'imagepatching::ImagePatcher']]],
+  ['proj_4',['proj',['../class_visualizer_1_1_image_annotations3_d.html#ad23210fcc633a5aba60a9712fd4d8801',1,'Visualizer::ImageAnnotations3D']]]
 ];

@@ -82,15 +82,16 @@ Inheritance diagram for test_iterator.TestIterator:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a8a887dc172ab11cb83564eb11b0c9825"><td class="memItemLeft" align="right" valign="top"><a id="a8a887dc172ab11cb83564eb11b0c9825" name="a8a887dc172ab11cb83564eb11b0c9825"></a>
-def&#160;</td><td class="memItemRight" valign="bottom"><b>__init__</b> (self, batch_size, label, image_folder_path, return_name=True)</td></tr>
-<tr class="separator:a8a887dc172ab11cb83564eb11b0c9825"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ce23f327a463135e5fdb149e0c8d913"><td class="memItemLeft" align="right" valign="top"><a id="a3ce23f327a463135e5fdb149e0c8d913" name="a3ce23f327a463135e5fdb149e0c8d913"></a>
-def&#160;</td><td class="memItemRight" valign="bottom"><b>__len__</b> (self)</td></tr>
-<tr class="separator:a3ce23f327a463135e5fdb149e0c8d913"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acf5e022aa3b5c4ec423558e24a67527b"><td class="memItemLeft" align="right" valign="top"><a id="acf5e022aa3b5c4ec423558e24a67527b" name="acf5e022aa3b5c4ec423558e24a67527b"></a>
-def&#160;</td><td class="memItemRight" valign="bottom"><b>__getitem__</b> (self, index)</td></tr>
-<tr class="separator:acf5e022aa3b5c4ec423558e24a67527b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b81fbf09fae5ce86204e34a228470ef"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtest__iterator_1_1_test_iterator.html#a5b81fbf09fae5ce86204e34a228470ef">__init__</a> (self, int batch_size, str csv_dir, str image_folder_path, return_name=False, preserve_image=False)</td></tr>
+<tr class="separator:a5b81fbf09fae5ce86204e34a228470ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2d2caffaafb246339a4134090e4e143"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtest__iterator_1_1_test_iterator.html#af2d2caffaafb246339a4134090e4e143">__len__</a> (self)</td></tr>
+<tr class="separator:af2d2caffaafb246339a4134090e4e143"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7dc822a0d71566e91dce0ec6771b2f5"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtest__iterator_1_1_test_iterator.html#ae7dc822a0d71566e91dce0ec6771b2f5">get_labels</a> (self)</td></tr>
+<tr class="separator:ae7dc822a0d71566e91dce0ec6771b2f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9f509943961146f2c4fd60cbb304e8c4"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtest__iterator_1_1_test_iterator.html#a9f509943961146f2c4fd60cbb304e8c4">on_epoch_end</a> (self)</td></tr>
+<tr class="separator:a9f509943961146f2c4fd60cbb304e8c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa77bb6dc13501ccccbd7e435d05fc8c1"><td class="memItemLeft" align="right" valign="top">[np.ndarray, np.ndarray]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtest__iterator_1_1_test_iterator.html#aa77bb6dc13501ccccbd7e435d05fc8c1">__getitem__</a> (self, int index)</td></tr>
+<tr class="separator:aa77bb6dc13501ccccbd7e435d05fc8c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -100,13 +101,199 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:abb15a06034fe614157ef83e388c7874e"><td class="memItemLeft" align="right" valign="top"><a id="abb15a06034fe614157ef83e388c7874e" name="abb15a06034fe614157ef83e388c7874e"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>files</b></td></tr>
 <tr class="separator:abb15a06034fe614157ef83e388c7874e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6cf66033cdd09cbc19dd5fd5d8bdda34"><td class="memItemLeft" align="right" valign="top"><a id="a6cf66033cdd09cbc19dd5fd5d8bdda34" name="a6cf66033cdd09cbc19dd5fd5d8bdda34"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>label</b></td></tr>
-<tr class="separator:a6cf66033cdd09cbc19dd5fd5d8bdda34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50d8487a96b65c69ecc1ccc603a77d1f"><td class="memItemLeft" align="right" valign="top"><a id="a50d8487a96b65c69ecc1ccc603a77d1f" name="a50d8487a96b65c69ecc1ccc603a77d1f"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>labels</b></td></tr>
+<tr class="separator:a50d8487a96b65c69ecc1ccc603a77d1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a720c86c4f21bc4e2f09f03248d40fe03"><td class="memItemLeft" align="right" valign="top"><a id="a720c86c4f21bc4e2f09f03248d40fe03" name="a720c86c4f21bc4e2f09f03248d40fe03"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>csv_dir</b></td></tr>
+<tr class="separator:a720c86c4f21bc4e2f09f03248d40fe03"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4111b9ec5bda06897c7b2c322ea1b59c"><td class="memItemLeft" align="right" valign="top"><a id="a4111b9ec5bda06897c7b2c322ea1b59c" name="a4111b9ec5bda06897c7b2c322ea1b59c"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>return_name</b></td></tr>
 <tr class="separator:a4111b9ec5bda06897c7b2c322ea1b59c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03ae40c11b844f0d96c8e5f5648d7587"><td class="memItemLeft" align="right" valign="top"><a id="a03ae40c11b844f0d96c8e5f5648d7587" name="a03ae40c11b844f0d96c8e5f5648d7587"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>preserve_image</b></td></tr>
+<tr class="separator:a03ae40c11b844f0d96c8e5f5648d7587"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a5b81fbf09fae5ce86204e34a228470ef" name="a5b81fbf09fae5ce86204e34a228470ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b81fbf09fae5ce86204e34a228470ef">&#9670;&nbsp;</a></span>__init__()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def test_iterator.TestIterator.__init__ </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>batch_size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">str&#160;</td>
+          <td class="paramname"><em>csv_dir</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">str&#160;</td>
+          <td class="paramname"><em>image_folder_path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>return_name</em> = <code>False</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>preserve_image</em> = <code>False</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">Constructor for TestIterator
+
+Parameters
+----------
+batch_size : int
+    size of batch, aka number of files per batch.
+csv_dir : str
+    Path to csv file.
+image_folder_path : str
+    Path to folder containing subdirs, which themselves contain the heatmaps.
+return_name : BOOLEAN, optional
+    FOR TESTING, return the names of the files in each batch. The default is False.
+preserve_image : BOOL, optional
+    If shuffling should occur at the end of epoch
+    Should be True for training, false for prediction. The default is False.
+
+Returns
+-------
+None.</pre> 
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="aa77bb6dc13501ccccbd7e435d05fc8c1" name="aa77bb6dc13501ccccbd7e435d05fc8c1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa77bb6dc13501ccccbd7e435d05fc8c1">&#9670;&nbsp;</a></span>__getitem__()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"> [np.ndarray, np.ndarray] test_iterator.TestIterator.__getitem__ </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">The meat of the iterator, will return numpy arrays contianing the batch X, and Batch Y 
+associated with the current batch index.
+
+Parameters
+----------
+index : int
+    The batch index, 0 &lt; index &lt; len.
+
+Returns
+-------
+Tuple[np.ndarray, np.ndarray]
+    Tuple containing batch X and batch Y.
+    X is of the form (batch_size, 1, 193, 126)
+    Y is the form (batch_size, )</pre> 
+</div>
+</div>
+<a id="af2d2caffaafb246339a4134090e4e143" name="af2d2caffaafb246339a4134090e4e143"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af2d2caffaafb246339a4134090e4e143">&#9670;&nbsp;</a></span>__len__()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"> int test_iterator.TestIterator.__len__ </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>self</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">Return the number of batches in the dataset, the number of steps per epoch
+
+Returns
+-------
+int
+    number of batches in the dataset.</pre> 
+</div>
+</div>
+<a id="ae7dc822a0d71566e91dce0ec6771b2f5" name="ae7dc822a0d71566e91dce0ec6771b2f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7dc822a0d71566e91dce0ec6771b2f5">&#9670;&nbsp;</a></span>get_labels()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def test_iterator.TestIterator.get_labels </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>self</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">Open the csv file and extract the labels, add them to a dictioinary with the image name as key
+
+Returns
+-------
+None.</pre> 
+</div>
+</div>
+<a id="a9f509943961146f2c4fd60cbb304e8c4" name="a9f509943961146f2c4fd60cbb304e8c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9f509943961146f2c4fd60cbb304e8c4">&#9670;&nbsp;</a></span>on_epoch_end()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def test_iterator.TestIterator.on_epoch_end </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>self</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">Function that runs conditionally at the end of each epoch, shuffles the data
+
+Returns
+-------
+None.</pre> 
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>ML/test_iterator.py</li>
 </ul>
